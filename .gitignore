@@ -1,0 +1,17 @@
+# Build artifacts
+build/
+/*/build/
+.gradle
+.kotlin/
+.externalNativeBuild/
+
+# IDE settings
+.idea/
+*.iml
+/local.properties
+.DS_Store
+
+# Captures and logs
+/captures
+.gitconfig
+
