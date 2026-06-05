@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iiinaiii.punks.util.delegates
+package com.iiinaiii.punks.ui.util.delegates
 
 import android.app.Activity
 import androidx.annotation.LayoutRes

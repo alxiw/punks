@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iiinaiii.punks.util.event
+package com.iiinaiii.punks.ui.util.event
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.

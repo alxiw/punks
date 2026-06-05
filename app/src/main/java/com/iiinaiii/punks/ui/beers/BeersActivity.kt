@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ActivityBeersBinding
-import com.iiinaiii.punks.util.delegates.contentView
+import com.iiinaiii.punks.ui.util.delegates.contentView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

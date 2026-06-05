@@ -2,7 +2,6 @@ package com.iiinaiii.punks.ui.beers
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.iiinaiii.punks.util.DataLoadingSubject
 
 /**
  * A scroll listener for RecyclerView to load more items as you approach the end.

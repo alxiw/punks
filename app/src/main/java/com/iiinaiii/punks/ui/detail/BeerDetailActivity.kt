@@ -14,7 +14,7 @@ import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.ui.detail.item.HeaderItem
 import com.iiinaiii.punks.ui.detail.item.SimpleTextItem
 import com.iiinaiii.punks.ui.detail.item.ValueItem
-import com.iiinaiii.punks.util.delegates.contentView
+import com.iiinaiii.punks.ui.util.delegates.contentView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.databinding.GroupieViewHolder
