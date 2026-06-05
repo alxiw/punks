@@ -3,7 +3,7 @@ package com.iiinaiii.punks.util
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.iiinaiii.punks.util.glide.GlideApp
+import com.bumptech.glide.Glide
 
 @BindingAdapter("visibleUnless")
 fun bindVisibleUnless(view: View, visible: Boolean) {
@@ -17,6 +17,6 @@ fun bindVisibleUnless(view: View, visible: Boolean) {
 @BindingAdapter("imageUrl")
 fun ImageView.loadImage(url: String?) {
     url?.let {
-        GlideApp.with(context).load(it).into(this)
+        Glide.with(context).load(it).into(this)
     }
 }

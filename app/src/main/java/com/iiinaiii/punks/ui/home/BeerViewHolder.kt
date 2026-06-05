@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ItemBeerBinding
-import com.iiinaiii.punks.util.glide.GlideApp
+import com.bumptech.glide.Glide
 
 class BeerViewHolder(
     private val binding: ItemBeerBinding,
@@ -30,7 +30,7 @@ class BeerViewHolder(
         binding.firstBrew.text = uiModel.firstBrewed
         binding.beerAbv.text = uiModel.abv
 
-        GlideApp.with(binding.root.context)
+        Glide.with(binding.root.context)
             .load(uiModel.imageUrl)
             .into(binding.beerImage)
     }
