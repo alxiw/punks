@@ -1,21 +1,21 @@
 package com.iiinaiii.punks.ui.home
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.R
-import com.iiinaiii.punks.dagger.inject
 import com.iiinaiii.punks.databinding.ActivityHomeBinding
 import com.iiinaiii.punks.ui.InfiniteScrollListener
 import com.iiinaiii.punks.util.delegates.contentView
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
-    @Inject
-    internal lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     lateinit var beersAdapter: BeersAdapter
 
     private val binding by contentView<HomeActivity, ActivityHomeBinding>(
@@ -24,8 +24,6 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        inject()
 
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel

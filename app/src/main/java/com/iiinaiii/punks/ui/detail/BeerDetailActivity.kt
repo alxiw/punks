@@ -3,12 +3,12 @@ package com.iiinaiii.punks.ui.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.databinding.ViewDataBinding
 import com.iiinaiii.punks.R
-import com.iiinaiii.punks.dagger.inject
 import com.iiinaiii.punks.databinding.ActivityBeerDetailBinding
 import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.ui.detail.item.HeaderItem
@@ -18,12 +18,12 @@ import com.iiinaiii.punks.util.delegates.contentView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.databinding.GroupieViewHolder
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BeerDetailActivity : AppCompatActivity() {
 
-    @Inject
-    internal lateinit var viewModel: BeerDetailViewModel
+    private val viewModel: BeerDetailViewModel by viewModels()
 
     private val binding by contentView<BeerDetailActivity, ActivityBeerDetailBinding>(
         R.layout.activity_beer_detail
@@ -38,9 +38,7 @@ class BeerDetailActivity : AppCompatActivity() {
             "Beer ID is invalid"
         }
 
-        inject(beerId)
-
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         setupRecyclerView()
         binding.viewModel = viewModel
         viewModel.uiModel.observe(this, Observer { uiModel ->

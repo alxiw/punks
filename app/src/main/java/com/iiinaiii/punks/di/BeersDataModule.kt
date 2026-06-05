@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.dagger
+package com.iiinaiii.punks.di
 
 import com.iiinaiii.punks.BuildConfig
 import com.iiinaiii.punks.data.api.BeersSearchService
@@ -10,6 +10,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,7 +20,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 /**
  * Dagger module providing classes required to beers with data.
  */
-@Module(includes = [CoroutinesDispatcherProviderModule::class])
+@Module
+@InstallIn(SingletonComponent::class)
 class BeersDataModule {
 
     @Provides

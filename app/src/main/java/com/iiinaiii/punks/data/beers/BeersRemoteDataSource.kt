@@ -7,7 +7,9 @@ import com.iiinaiii.punks.util.safeApiCall
 import java.io.IOException
 import javax.inject.Inject
 
-class BeersRemoteDataSource @Inject constructor(private val service: BeersSearchService) {
+class BeersRemoteDataSource @Inject constructor(
+    private val service: BeersSearchService
+) {
 
     suspend fun search(
         page: Int
@@ -22,7 +24,7 @@ class BeersRemoteDataSource @Inject constructor(private val service: BeersSearch
         val response = service.search(page).await()
         if (response.isSuccessful) {
             val body = response.body()
-            if (body != null && body.isNotEmpty()) {
+            if (!body.isNullOrEmpty()) {
                 return Result.Success(body)
             }
         }

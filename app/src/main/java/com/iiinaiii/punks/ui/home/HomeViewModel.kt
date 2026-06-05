@@ -3,6 +3,7 @@ package com.iiinaiii.punks.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import com.iiinaiii.punks.data.CoroutinesDispatcherProvider
 import com.iiinaiii.punks.data.Result
 import com.iiinaiii.punks.domain.SearchBeersUseCase
@@ -13,8 +14,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val searchBeers: SearchBeersUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel(), DataLoadingSubject {

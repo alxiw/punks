@@ -2,20 +2,26 @@ package com.iiinaiii.punks.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.iiinaiii.punks.data.CoroutinesDispatcherProvider
 import com.iiinaiii.punks.data.Result
 import com.iiinaiii.punks.domain.GetBeerUseCase
 import com.iiinaiii.punks.domain.model.Beer
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BeerDetailViewModel(
-    beerId: Int,
+@HiltViewModel
+class BeerDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getBeer: GetBeerUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
+
+    private val beerId: Int = savedStateHandle.get<Int>("extra_beer_id") ?: -1
 
     private val parentJob = Job()
     private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
@@ -25,7 +31,9 @@ class BeerDetailViewModel(
         get() = _uiModel
 
     init {
-        loadBeer(beerId)
+        if (beerId != -1) {
+            loadBeer(beerId)
+        }
     }
 
     private fun loadBeer(beerId: Int) = scope.launch(dispatcherProvider.computation) {
