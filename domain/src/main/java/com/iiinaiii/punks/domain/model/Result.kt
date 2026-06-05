@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.data.model
+package com.iiinaiii.punks.domain.model
 
 /**
  * A generic class that holds a value with its loading status.

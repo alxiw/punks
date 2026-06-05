@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Punks"
 include(":app")
+include(":domain")

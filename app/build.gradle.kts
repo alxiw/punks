@@ -49,6 +49,7 @@ kotlin {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(":domain"))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)

@@ -1,6 +1,6 @@
 package com.iiinaiii.punks.data.remote
 
-import com.iiinaiii.punks.data.model.Result
+import com.iiinaiii.punks.domain.model.Result
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.data.remote.api.model.BeerResponse
 import com.iiinaiii.punks.data.remote.api.util.safeApiCall
