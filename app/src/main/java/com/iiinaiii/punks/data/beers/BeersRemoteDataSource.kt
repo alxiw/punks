@@ -6,7 +6,9 @@ import com.iiinaiii.punks.data.beers.model.BeerResponse
 import com.iiinaiii.punks.util.safeApiCall
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BeersRemoteDataSource @Inject constructor(
     private val service: BeersSearchService
 ) {
@@ -31,17 +33,5 @@ class BeersRemoteDataSource @Inject constructor(
         return Result.Error(
             IOException("Error getting BeerResponse data ${response.code()} ${response.message()}")
         )
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: BeersRemoteDataSource? = null
-
-        fun getInstance(service: BeersSearchService): BeersRemoteDataSource {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: BeersRemoteDataSource(service).also { INSTANCE = it }
-            }
-        }
     }
 }

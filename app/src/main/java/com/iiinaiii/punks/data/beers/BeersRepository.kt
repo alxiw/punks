@@ -2,8 +2,11 @@ package com.iiinaiii.punks.data.beers
 
 import com.iiinaiii.punks.data.Result
 import com.iiinaiii.punks.data.beers.model.BeerResponse
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class BeersRepository(private val remoteDataSource: BeersRemoteDataSource) {
+@Singleton
+class BeersRepository @Inject constructor(private val remoteDataSource: BeersRemoteDataSource) {
 
     private val beerCache = mutableMapOf<Int, BeerResponse>()
 
@@ -29,19 +32,6 @@ class BeersRepository(private val remoteDataSource: BeersRemoteDataSource) {
     }
 
     private fun cache(data: List<BeerResponse>) {
-        data.associateTo(beerCache) { it.id to it }
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: BeersRepository? = null
-
-        fun getInstance(
-            remoteDataSource: BeersRemoteDataSource
-        ): BeersRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: BeersRepository(remoteDataSource).also { INSTANCE = it }
-            }
-        }
+        data.associateByTo(beerCache) { it.id }
     }
 }

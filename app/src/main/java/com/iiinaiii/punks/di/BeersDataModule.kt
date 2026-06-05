@@ -1,9 +1,7 @@
 package com.iiinaiii.punks.di
 
-import com.iiinaiii.punks.BuildConfig
+import android.util.Log
 import com.iiinaiii.punks.data.api.BeersSearchService
-import com.iiinaiii.punks.data.beers.BeersRemoteDataSource
-import com.iiinaiii.punks.data.beers.BeersRepository
 import com.iiinaiii.punks.util.moshi.LocalDateTimeAdapter
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -16,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Dagger module providing classes required to beers with data.
@@ -23,37 +22,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 class BeersDataModule {
-
-    @Provides
-    fun provideBeersRepository(
-        remoteDataSource: BeersRemoteDataSource
-    ) = BeersRepository.getInstance(remoteDataSource)
-
-    @Provides
-    fun provideBeersRemoteDataSource(
-        service: BeersSearchService
-    ) = BeersRemoteDataSource.getInstance(service)
-
-    @Provides
-    fun provideBeersSearchService(moshi: Moshi): BeersSearchService {
-        return provideRetrofit(
-            BeersSearchService.ENDPOINT,
-            moshi
-        ).create(BeersSearchService::class.java)
-    }
-
-    @Provides
-    fun provideRetrofit(
-        baseUrl: String,
-        moshi: Moshi
-    ): Retrofit {
-        return provideRetrofitBuilder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .client(provideOkHttpClient(provideLoggingInterceptor()))
-            .build()
-    }
 
     @Provides
     fun provideMoshi(): Moshi {
@@ -64,22 +32,24 @@ class BeersDataModule {
     }
 
     @Provides
-    fun provideRetrofitBuilder() = Retrofit.Builder()
-
-    @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-        }
+    fun provideOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor { message -> Log.d("HELLO", message) }
+            .apply { level = HttpLoggingInterceptor.Level.BASIC }
+        return OkHttpClient.Builder()
+            .readTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .addInterceptor(interceptor)
+            .build()
     }
 
     @Provides
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
+    fun provideBeersSearchService(moshi: Moshi, client: OkHttpClient): BeersSearchService {
+        return Retrofit.Builder()
+            .baseUrl(BeersSearchService.ENDPOINT)
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+            .create(BeersSearchService::class.java)
     }
-
 }
