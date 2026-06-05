@@ -3,7 +3,7 @@ package com.iiinaiii.punks.data.remote
 import com.iiinaiii.punks.data.model.Result
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.data.remote.api.model.BeerResponse
-import com.iiinaiii.punks.util.safeApiCall
+import com.iiinaiii.punks.data.remote.api.util.safeApiCall
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton

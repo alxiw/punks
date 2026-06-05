@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.home
+package com.iiinaiii.punks.ui.beers
 
 import android.app.Activity
 import android.app.ActivityOptions

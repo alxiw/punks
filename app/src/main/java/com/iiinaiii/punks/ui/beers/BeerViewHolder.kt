@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.home
+package com.iiinaiii.punks.ui.beers
 
 import android.util.Pair
 import android.view.View

@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.home
+package com.iiinaiii.punks.ui.beers
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import com.iiinaiii.punks.data.model.Result
 import com.iiinaiii.punks.domain.SearchBeersUseCase
 import com.iiinaiii.punks.domain.model.toItemUiModels
+import com.iiinaiii.punks.ui.beers.model.BeerResultUiModel
+import com.iiinaiii.punks.ui.beers.model.HomeUiModel
 import com.iiinaiii.punks.util.DataLoadingSubject
 import com.iiinaiii.punks.util.event.Event
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class BeersViewModel @Inject constructor(
     private val searchBeers: SearchBeersUseCase,
 ) : ViewModel(), DataLoadingSubject {
 
@@ -64,13 +66,3 @@ class HomeViewModel @Inject constructor(
         _uiModel.postValue(HomeUiModel(showProgress, showSuccess, showError))
     }
 }
-
-data class HomeUiModel(
-    val showProgress: Boolean,
-    val showSuccess: Event<BeerResultUiModel>?,
-    val showError: Event<Unit>?
-)
-
-data class BeerResultUiModel(
-    val beers: List<BeerItemUiModel>
-)

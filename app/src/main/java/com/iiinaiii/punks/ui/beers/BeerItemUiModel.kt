@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.home
+package com.iiinaiii.punks.ui.beers
 
 data class BeerItemUiModel(
     val id: Int,

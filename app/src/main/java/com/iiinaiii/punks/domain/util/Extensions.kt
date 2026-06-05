@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iiinaiii.punks.util
+package com.iiinaiii.punks.domain.util
 
 /**
  * Helper to force a when statement to assert all options are matched in a when statement.

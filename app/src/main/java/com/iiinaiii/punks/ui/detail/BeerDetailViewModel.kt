@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.iiinaiii.punks.data.model.Result
 import com.iiinaiii.punks.domain.GetBeerUseCase
 import com.iiinaiii.punks.domain.model.Beer
+import com.iiinaiii.punks.ui.detail.model.BeerDetailUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,8 +42,4 @@ class BeerDetailViewModel @Inject constructor(
     private fun emitUiModel(beer: Beer) {
         _uiModel.postValue(BeerDetailUiModel(beer))
     }
-
-    data class BeerDetailUiModel(
-        val beer: Beer
-    )
 }

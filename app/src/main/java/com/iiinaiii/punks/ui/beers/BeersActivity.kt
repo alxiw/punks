@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.home
+package com.iiinaiii.punks.ui.beers
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ActivityBeersBinding
-import com.iiinaiii.punks.ui.InfiniteScrollListener
 import com.iiinaiii.punks.util.delegates.contentView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BeersActivity : AppCompatActivity() {
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: BeersViewModel by viewModels()
     lateinit var beersAdapter: BeersAdapter
 
     private val binding by contentView<BeersActivity, ActivityBeersBinding>(

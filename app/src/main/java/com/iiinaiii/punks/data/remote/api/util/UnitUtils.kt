@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.util
+package com.iiinaiii.punks.data.remote.api.util
 
 enum class ValueUnit(val fullName: String, val displayName: String) {
     LITERS("litres", "L"),

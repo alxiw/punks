@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.util
+package com.iiinaiii.punks.data.remote.api.util
 
 import com.iiinaiii.punks.data.model.Result
 import java.io.IOException

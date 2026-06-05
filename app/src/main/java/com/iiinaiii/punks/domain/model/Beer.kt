@@ -1,6 +1,6 @@
 package com.iiinaiii.punks.domain.model
 
-import com.iiinaiii.punks.ui.home.BeerItemUiModel
+import com.iiinaiii.punks.ui.beers.BeerItemUiModel
 
 data class Beer(
     val id: Int,

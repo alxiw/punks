@@ -4,7 +4,7 @@ import com.iiinaiii.punks.data.model.Result
 import com.iiinaiii.punks.data.BeersRepository
 import com.iiinaiii.punks.data.remote.api.model.toBeer
 import com.iiinaiii.punks.domain.model.Beer
-import com.iiinaiii.punks.util.exhaustive
+import com.iiinaiii.punks.domain.util.exhaustive
 import javax.inject.Inject
 
 class GetBeerUseCase @Inject constructor(
