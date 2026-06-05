@@ -91,6 +91,7 @@ class BeerDetailActivity : AppCompatActivity() {
         }
 
         groupAdapter.apply {
+            clear()
             add(descriptionSection)
             add(basicsSection)
             add(foodPairingSection)

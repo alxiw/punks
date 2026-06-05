@@ -37,6 +37,5 @@
       app:layout_constraintTop_toTopOf="parent"
       app:visibleUnless="@{viewModel.uiModel.showProgress}" />
 
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

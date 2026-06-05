@@ -15,7 +15,7 @@
 
   </data>
 
-  <ScrollView
+  <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -182,7 +182,7 @@
         android:id="@+id/detail_recycler_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="true"
+        android:nestedScrollingEnabled="false"
         android:paddingTop="8dp"
         android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="@id/end_guideline"
@@ -191,5 +191,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-  </ScrollView>
+  </androidx.core.widget.NestedScrollView>
 </layout>
