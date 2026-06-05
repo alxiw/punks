@@ -86,8 +86,7 @@ dependencies {
     ksp(libs.moshi.kotlin.codegen)
 
     // Images
-    implementation(libs.glide)
-    ksp(libs.glide.compiler)
+    implementation(libs.coil)
 
     // Util
     implementation(libs.threetenabp)

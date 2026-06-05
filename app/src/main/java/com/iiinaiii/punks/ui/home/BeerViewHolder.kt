@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ItemBeerBinding
-import com.bumptech.glide.Glide
+import coil.load
 
 class BeerViewHolder(
     private val binding: ItemBeerBinding,
@@ -30,9 +30,7 @@ class BeerViewHolder(
         binding.firstBrew.text = uiModel.firstBrewed
         binding.beerAbv.text = uiModel.abv
 
-        Glide.with(binding.root.context)
-            .load(uiModel.imageUrl)
-            .into(binding.beerImage)
+        binding.beerImage.load(uiModel.imageUrl)
     }
 
     private fun getSharedElementsForTransition(): Array<Pair<View, String>> {

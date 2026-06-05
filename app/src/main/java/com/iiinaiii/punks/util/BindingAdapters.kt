@@ -3,7 +3,9 @@ package com.iiinaiii.punks.util
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.bumptech.glide.Glide
+import coil.load
+import coil.size.Precision
+import coil.size.ViewSizeResolver
 
 @BindingAdapter("visibleUnless")
 fun bindVisibleUnless(view: View, visible: Boolean) {
@@ -16,7 +18,8 @@ fun bindVisibleUnless(view: View, visible: Boolean) {
 
 @BindingAdapter("imageUrl")
 fun ImageView.loadImage(url: String?) {
-    url?.let {
-        Glide.with(context).load(it).into(this)
+    this.load(url) {
+        size(ViewSizeResolver(this@loadImage))
+        precision(Precision.EXACT)
     }
 }
