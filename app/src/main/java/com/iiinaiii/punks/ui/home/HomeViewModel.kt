@@ -3,15 +3,14 @@ package com.iiinaiii.punks.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.iiinaiii.punks.data.CoroutinesDispatcherProvider
 import com.iiinaiii.punks.data.Result
 import com.iiinaiii.punks.domain.SearchBeersUseCase
 import com.iiinaiii.punks.domain.model.toItemUiModels
 import com.iiinaiii.punks.util.DataLoadingSubject
 import com.iiinaiii.punks.util.event.Event
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,11 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val searchBeers: SearchBeersUseCase,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel(), DataLoadingSubject {
-
-    private val parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     private val _uiModel = MutableLiveData<HomeUiModel>()
     val uiModel: LiveData<HomeUiModel>
@@ -40,12 +35,12 @@ class HomeViewModel @Inject constructor(
         getBeers(pageNum)
     }
 
-    private fun getBeers(page: Int) = scope.launch(dispatcherProvider.computation) {
-        withContext(dispatcherProvider.main) { showLoading() }
+    private fun getBeers(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.Main) { showLoading() }
         isDataLoading = true
 
         val result = searchBeers(page)
-        withContext(dispatcherProvider.main) {
+        withContext(Dispatchers.Main) {
             if (result is Result.Success) {
                 pageNum++
                 emitUiModel(showSuccess = Event(BeerResultUiModel(result.data.toItemUiModels())))

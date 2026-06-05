@@ -4,27 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.iiinaiii.punks.data.CoroutinesDispatcherProvider
+import androidx.lifecycle.viewModelScope
 import com.iiinaiii.punks.data.Result
 import com.iiinaiii.punks.domain.GetBeerUseCase
 import com.iiinaiii.punks.domain.model.Beer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BeerDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getBeer: GetBeerUseCase,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
+    private val getBeer: GetBeerUseCase
 ) : ViewModel() {
 
     private val beerId: Int = savedStateHandle.get<Int>("extra_beer_id") ?: -1
-
-    private val parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     private val _uiModel = MutableLiveData<BeerDetailUiModel>()
     val uiModel: LiveData<BeerDetailUiModel>
@@ -36,12 +31,9 @@ class BeerDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadBeer(beerId: Int) = scope.launch(dispatcherProvider.computation) {
-        val result = getBeer(beerId)
-        when (result) {
-            is Result.Success -> {
-                emitUiModel(result.data)
-            }
+    private fun loadBeer(beerId: Int) = viewModelScope.launch(Dispatchers.Default) {
+        when (val result = getBeer(beerId)) {
+            is Result.Success -> emitUiModel(result.data)
             is Result.Error -> throw result.exception
         }
     }
