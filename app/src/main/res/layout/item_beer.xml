@@ -8,13 +8,13 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:minHeight="72dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
     <ImageView
       android:id="@+id/beer_image"
       android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_height="60dp"
       android:contentDescription="@null"
       android:transitionName="@string/transition_beer_image"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,7 @@
       android:id="@+id/beer_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="16dp"
+      android:layout_marginStart="8dp"
       android:layout_marginEnd="8dp"
       android:ellipsize="end"
       android:maxLines="1"
