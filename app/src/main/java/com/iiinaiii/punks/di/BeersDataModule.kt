@@ -1,7 +1,7 @@
 package com.iiinaiii.punks.di
 
 import android.util.Log
-import com.iiinaiii.punks.data.api.BeersSearchService
+import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.util.moshi.LocalDateTimeAdapter
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi

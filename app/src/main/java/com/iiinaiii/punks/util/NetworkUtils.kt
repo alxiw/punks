@@ -1,6 +1,6 @@
 package com.iiinaiii.punks.util
 
-import com.iiinaiii.punks.data.Result
+import com.iiinaiii.punks.data.model.Result
 import java.io.IOException
 
 /**

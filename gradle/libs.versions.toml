@@ -49,7 +49,6 @@ groupie = { group = "com.github.lisawray.groupie", name = "groupie", version.ref
 groupie-databinding = { group = "com.github.lisawray.groupie", name = "groupie-databinding", version.ref = "groupie" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 retrofit-coroutines-adapter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlin-coroutines-adapter", version.ref = "retrofitCoroutines" }
 

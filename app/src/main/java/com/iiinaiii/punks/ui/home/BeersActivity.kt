@@ -7,25 +7,25 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ActivityHomeBinding
+import com.iiinaiii.punks.databinding.ActivityBeersBinding
 import com.iiinaiii.punks.ui.InfiniteScrollListener
 import com.iiinaiii.punks.util.delegates.contentView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity() {
+class BeersActivity : AppCompatActivity() {
 
     private val viewModel: HomeViewModel by viewModels()
     lateinit var beersAdapter: BeersAdapter
 
-    private val binding by contentView<HomeActivity, ActivityHomeBinding>(
-        R.layout.activity_home
+    private val binding by contentView<BeersActivity, ActivityBeersBinding>(
+        R.layout.activity_beers
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
         setupRecyclerView()
@@ -50,7 +50,7 @@ class HomeActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         beersAdapter = BeersAdapter(this)
         binding.homeRecyclerView.apply {
-            val linearLayoutManager = LinearLayoutManager(this@HomeActivity)
+            val linearLayoutManager = LinearLayoutManager(this@BeersActivity)
             layoutManager = linearLayoutManager
             adapter = beersAdapter
             addOnScrollListener(object : InfiniteScrollListener(linearLayoutManager, viewModel) {

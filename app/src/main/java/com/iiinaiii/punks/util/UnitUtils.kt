@@ -1,13 +1,13 @@
 package com.iiinaiii.punks.util
 
 enum class ValueUnit(val fullName: String, val displayName: String) {
-    LITERS("liters", "L"),
+    LITERS("litres", "L"),
     GRAMS("grams", "g"),
     KILOGRAMS("kilograms", "kg");
 
     companion object {
-        fun convertToDispName(fullName: String): String {
-            return values().find { it.fullName == fullName }?.displayName ?: fullName
+        fun convertToDisplayName(fullName: String): String {
+            return entries.find { it.fullName == fullName }?.displayName ?: fullName
         }
     }
 }

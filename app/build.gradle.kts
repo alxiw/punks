@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -9,7 +10,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.iiinaiii.punks"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
@@ -50,20 +51,15 @@ kotlin {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    // Kotlin
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
     // AndroidX
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
 
     // DI
     implementation(libs.hilt.android)
@@ -74,17 +70,24 @@ dependencies {
     implementation(libs.groupie)
     implementation(libs.groupie.databinding)
 
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
     // Network
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.retrofit.converter.moshi)
-    implementation(libs.retrofit.coroutines.adapter)
-    implementation(libs.glide)
-    ksp(libs.glide.compiler)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.retrofit.coroutines.adapter)
+
+    // Json
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
+
+    // Images
+    implementation(libs.glide)
+    ksp(libs.glide.compiler)
 
     // Util
     implementation(libs.threetenabp)

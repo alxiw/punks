@@ -1,7 +1,8 @@
-package com.iiinaiii.punks.data.beers
+package com.iiinaiii.punks.data
 
-import com.iiinaiii.punks.data.Result
-import com.iiinaiii.punks.data.beers.model.BeerResponse
+import com.iiinaiii.punks.data.model.Result
+import com.iiinaiii.punks.data.remote.BeersRemoteDataSource
+import com.iiinaiii.punks.data.remote.api.model.BeerResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 

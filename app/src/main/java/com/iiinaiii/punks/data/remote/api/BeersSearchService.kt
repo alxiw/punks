@@ -1,7 +1,7 @@
-package com.iiinaiii.punks.data.api
+package com.iiinaiii.punks.data.remote.api
 
 import android.net.Uri
-import com.iiinaiii.punks.data.beers.model.BeerResponse
+import com.iiinaiii.punks.data.remote.api.model.BeerResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
@@ -23,6 +23,8 @@ interface BeersSearchService {
     companion object {
         val ENDPOINT = Uri.Builder().scheme("https")
             .authority("punkapi-alxiw.amvera.io")
-            .appendEncodedPath("v3/").build().toString()
+            .appendEncodedPath("v3/")
+            .build()
+            .toString()
     }
 }
