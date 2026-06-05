@@ -1,8 +1,9 @@
 package com.iiinaiii.punks.ui.detail.item
 
+import android.view.View
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ItemDetailHeaderBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class HeaderItem(private val text: String) : BindableItem<ItemDetailHeaderBinding>() {
     override fun getLayout() = R.layout.item_detail_header
@@ -10,4 +11,6 @@ class HeaderItem(private val text: String) : BindableItem<ItemDetailHeaderBindin
     override fun bind(viewBinding: ItemDetailHeaderBinding, position: Int) {
         viewBinding.headerText.text = text
     }
+
+    override fun initializeViewBinding(view: View) = ItemDetailHeaderBinding.bind(view)
 }

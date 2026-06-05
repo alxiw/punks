@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import coil.load
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ActivityBeerDetailBinding
@@ -15,10 +15,9 @@ import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.ui.detail.item.HeaderItem
 import com.iiinaiii.punks.ui.detail.item.SimpleTextItem
 import com.iiinaiii.punks.ui.detail.item.ValueItem
-import com.iiinaiii.punks.ui.util.delegates.contentView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.databinding.GroupieViewHolder
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,20 +25,19 @@ class BeerDetailActivity : AppCompatActivity() {
 
     private val viewModel: BeerDetailViewModel by viewModels()
 
-    private val binding by contentView<BeerDetailActivity, ActivityBeerDetailBinding>(
-        R.layout.activity_beer_detail
-    )
-    private val groupAdapter = GroupAdapter<GroupieViewHolder<ViewDataBinding>>()
+    private lateinit var binding: ActivityBeerDetailBinding
+    private val groupAdapter = GroupAdapter<GroupieViewHolder<ViewBinding>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityBeerDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val beerId = intent.getIntExtra(EXTRA_BEER_ID, -1)
         check(beerId != -1) {
             "Beer ID is invalid"
         }
 
-        binding.lifecycleOwner = this
         setupRecyclerView()
         viewModel.uiModel.observe(this, Observer { uiModel ->
             val beer = uiModel.beer

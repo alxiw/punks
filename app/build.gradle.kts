@@ -31,7 +31,6 @@ configure<ApplicationExtension> {
     }
 
     buildFeatures {
-        dataBinding = true
         viewBinding = true
         buildConfig = true
     }
@@ -68,7 +67,7 @@ dependencies {
     // UI
     implementation(libs.material)
     implementation(libs.groupie)
-    implementation(libs.groupie.databinding)
+    implementation(libs.groupie.viewbinding)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

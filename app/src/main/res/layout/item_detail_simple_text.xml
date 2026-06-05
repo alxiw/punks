@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingStart="8dp"
+  android:paddingTop="4dp"
+  android:paddingEnd="8dp"
+  android:paddingBottom="4dp">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+  <TextView
+    android:id="@+id/body_text"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:paddingStart="8dp"
-    android:paddingTop="4dp"
-    android:paddingEnd="8dp"
-    android:paddingBottom="4dp">
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="A collaboration by BrewDog and CAP with Cascara green unroasted cherry coffee beans." />
 
-    <TextView
-      android:id="@+id/body_text"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="A collaboration by BrewDog and CAP with Cascara green unroasted cherry coffee beans." />
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

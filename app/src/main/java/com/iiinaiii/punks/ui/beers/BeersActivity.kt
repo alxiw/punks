@@ -1,7 +1,6 @@
 package com.iiinaiii.punks.ui.beers
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -9,29 +8,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ActivityBeersBinding
-import com.iiinaiii.punks.ui.util.delegates.contentView
+import com.iiinaiii.punks.ui.util.setVisibility
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BeersActivity : AppCompatActivity() {
 
     private val viewModel: BeersViewModel by viewModels()
-    lateinit var beersAdapter: BeersAdapter
+    private lateinit var beersAdapter: BeersAdapter
 
-    private val binding by contentView<BeersActivity, ActivityBeersBinding>(
-        R.layout.activity_beers
-    )
+    private lateinit var binding: ActivityBeersBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding.lifecycleOwner = this
+        binding = ActivityBeersBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupRecyclerView()
         viewModel.uiModel.observe(this, Observer {
             val uiModel = it ?: return@Observer
 
-            binding.loading.visibility = if (uiModel.showProgress) View.VISIBLE else View.GONE
+            binding.loading.setVisibility(uiModel.showProgress)
 
             if (uiModel.showSuccess != null && !uiModel.showSuccess.consumed) {
                 uiModel.showSuccess.consume()?.let { beerResult ->

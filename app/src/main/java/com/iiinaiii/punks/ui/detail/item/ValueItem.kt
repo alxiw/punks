@@ -1,8 +1,9 @@
 package com.iiinaiii.punks.ui.detail.item
 
+import android.view.View
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ItemDetailValueBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ValueItem(
     private val title: String,
@@ -14,4 +15,6 @@ class ValueItem(
         viewBinding.title.text = title
         viewBinding.value.text = value
     }
+
+    override fun initializeViewBinding(view: View) = ItemDetailValueBinding.bind(view)
 }

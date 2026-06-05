@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ItemBeerBinding
-import coil.load
+import com.iiinaiii.punks.ui.util.loadImage
 
 class BeerViewHolder(
     private val binding: ItemBeerBinding,
@@ -31,7 +31,7 @@ class BeerViewHolder(
         binding.beerAbv.text = uiModel.abv
         binding.beerId.text = String.format("#%s", uiModel.id)
 
-        binding.beerImage.load(uiModel.imageUrl)
+        binding.beerImage.loadImage(uiModel.imageUrl)
     }
 
     private fun getSharedElementsForTransition(): Array<Pair<View, String>> {
