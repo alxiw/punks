@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.databinding.ViewDataBinding
+import coil.load
 import com.iiinaiii.punks.R
 import com.iiinaiii.punks.databinding.ActivityBeerDetailBinding
 import com.iiinaiii.punks.domain.model.Beer
@@ -40,10 +41,17 @@ class BeerDetailActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         setupRecyclerView()
-        binding.viewModel = viewModel
         viewModel.uiModel.observe(this, Observer { uiModel ->
-            binding.uiModel = uiModel
-            updateBeerRecyclerData(uiModel.beer)
+            val beer = uiModel.beer
+            binding.beerName.text = beer.name
+            binding.tagline.text = beer.tagline
+            binding.firstBrew.text = beer.firstBrewed
+            binding.topAbvValue.text = beer.abv
+            binding.topIbuValue.text = beer.ibu
+            binding.topOgValue.text = beer.targetOg
+            binding.beerPackage.load(beer.imageUrl)
+
+            updateBeerRecyclerData(beer)
         })
     }
 

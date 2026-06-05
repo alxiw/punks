@@ -1,6 +1,7 @@
 package com.iiinaiii.punks.ui.beers
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -25,11 +26,12 @@ class BeersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
 
         setupRecyclerView()
         viewModel.uiModel.observe(this, Observer {
             val uiModel = it ?: return@Observer
+
+            binding.loading.visibility = if (uiModel.showProgress) View.VISIBLE else View.GONE
 
             if (uiModel.showSuccess != null && !uiModel.showSuccess.consumed) {
                 uiModel.showSuccess.consume()?.let { beerResult ->

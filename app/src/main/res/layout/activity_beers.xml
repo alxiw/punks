@@ -3,14 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="com.iiinaiii.punks.ui.beers.BeersViewModel" />
-
-  </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,13 +11,14 @@
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"
       android:layout_width="0dp"
-      android:layout_height="wrap_content"
+      android:layout_height="0dp"
       android:fadeScrollbars="false"
       android:scrollbarStyle="outsideInset"
       android:scrollbars="vertical"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent" />
 
     <ProgressBar
       android:id="@+id/loading"
@@ -34,8 +27,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:visibleUnless="@{viewModel.uiModel.showProgress}" />
+      app:layout_constraintTop_toTopOf="parent" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
