@@ -57,5 +57,13 @@
       app:layout_constraintTop_toTopOf="@+id/first_brew"
       tools:text="6.0%" />
 
+    <TextView
+      android:id="@+id/beer_id"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="@+id/beer_name"
+      app:layout_constraintTop_toTopOf="@+id/first_brew"
+      tools:text="#366" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

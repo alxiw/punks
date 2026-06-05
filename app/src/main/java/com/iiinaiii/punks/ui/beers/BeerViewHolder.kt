@@ -29,6 +29,7 @@ class BeerViewHolder(
         binding.beerName.text = uiModel.name
         binding.firstBrew.text = uiModel.firstBrewed
         binding.beerAbv.text = uiModel.abv
+        binding.beerId.text = String.format("#%s", uiModel.id)
 
         binding.beerImage.load(uiModel.imageUrl)
     }
