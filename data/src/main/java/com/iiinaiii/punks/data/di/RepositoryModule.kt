@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.di
+package com.iiinaiii.punks.data.di
 
 import com.iiinaiii.punks.data.BeersRepositoryImpl
 import com.iiinaiii.punks.domain.BeersRepository

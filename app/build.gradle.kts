@@ -50,6 +50,7 @@ kotlin {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(project(":domain"))
+    implementation(project(":data"))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)
@@ -74,22 +75,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Network
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
-    implementation(libs.retrofit.coroutines.adapter)
-
-    // Json
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
-
     // Images
     implementation(libs.coil)
-
-    // Util
-    implementation(libs.threetenabp)
 
     // Test
     testImplementation(libs.junit)

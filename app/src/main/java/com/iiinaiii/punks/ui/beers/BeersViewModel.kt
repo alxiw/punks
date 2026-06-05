@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iiinaiii.punks.domain.SearchBeersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.iiinaiii.punks.domain.model.Result
-import com.iiinaiii.punks.domain.SearchBeersUseCase
 import com.iiinaiii.punks.ui.beers.model.BeerResultUiModel
 import com.iiinaiii.punks.ui.beers.model.HomeUiModel
 import com.iiinaiii.punks.ui.util.event.Event

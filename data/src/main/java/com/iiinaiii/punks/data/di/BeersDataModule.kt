@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.di
+package com.iiinaiii.punks.data.di
 
 import android.util.Log
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
