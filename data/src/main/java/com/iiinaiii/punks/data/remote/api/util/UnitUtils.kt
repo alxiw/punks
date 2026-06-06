@@ -1,6 +1,6 @@
 package com.iiinaiii.punks.data.remote.api.util
 
-enum class ValueUnit(val fullName: String, val displayName: String) {
+internal enum class ValueUnit(val fullName: String, val displayName: String) {
     LITERS("litres", "L"),
     GRAMS("grams", "g"),
     KILOGRAMS("kilograms", "kg");

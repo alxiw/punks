@@ -7,7 +7,7 @@ import org.threeten.bp.format.DateTimeParseException
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
 
-object LocalDateTimeAdapter {
+internal object LocalDateTimeAdapter {
 
     private val MONTH_YEAR_FORMATTER = DateTimeFormatter.ofPattern("MM/yyyy")
     private val YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy")

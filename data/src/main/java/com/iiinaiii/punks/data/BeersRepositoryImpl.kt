@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BeersRepositoryImpl @Inject constructor(
+internal class BeersRepositoryImpl @Inject constructor(
     private val remoteDataSource: BeersRemoteDataSource
 ) : BeersRepository {
 
