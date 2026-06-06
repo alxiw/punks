@@ -1,6 +1,6 @@
-package com.iiinaiii.punks.ui.beers.model
+package com.iiinaiii.punks.presentation.beers.model
 
-import com.iiinaiii.punks.ui.util.event.Event
+import com.iiinaiii.punks.presentation.util.event.Event
 
 data class HomeUiModel(
     val showProgress: Boolean,

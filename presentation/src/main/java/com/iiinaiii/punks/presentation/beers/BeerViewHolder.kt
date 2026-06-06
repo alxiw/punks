@@ -1,11 +1,11 @@
-package com.iiinaiii.punks.ui.beers
+package com.iiinaiii.punks.presentation.beers
 
 import android.util.Pair
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ItemBeerBinding
-import com.iiinaiii.punks.ui.util.loadImage
+import com.iiinaiii.punks.presentation.R
+import com.iiinaiii.punks.presentation.databinding.ItemBeerBinding
+import com.iiinaiii.punks.presentation.util.loadImage
 
 class BeerViewHolder(
     private val binding: ItemBeerBinding,

@@ -1,8 +1,8 @@
-package com.iiinaiii.punks.ui.detail.item
+package com.iiinaiii.punks.presentation.detail.item
 
 import android.view.View
-import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ItemDetailSimpleTextBinding
+import com.iiinaiii.punks.presentation.R
+import com.iiinaiii.punks.presentation.databinding.ItemDetailSimpleTextBinding
 import com.xwray.groupie.viewbinding.BindableItem
 
 class SimpleTextItem(private val text: String) : BindableItem<ItemDetailSimpleTextBinding>() {

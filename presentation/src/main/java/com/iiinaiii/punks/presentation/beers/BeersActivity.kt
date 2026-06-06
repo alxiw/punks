@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.beers
+package com.iiinaiii.punks.presentation.beers
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ActivityBeersBinding
-import com.iiinaiii.punks.ui.util.setVisibility
+import com.iiinaiii.punks.presentation.R
+import com.iiinaiii.punks.presentation.databinding.ActivityBeersBinding
+import com.iiinaiii.punks.presentation.util.setVisibility
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

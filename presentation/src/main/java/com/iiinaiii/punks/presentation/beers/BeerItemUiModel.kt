@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.beers
+package com.iiinaiii.punks.presentation.beers
 
 import com.iiinaiii.punks.domain.model.Beer
 

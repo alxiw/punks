@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.util
+package com.iiinaiii.punks.presentation.util
 
 import android.view.View
 import android.widget.ImageView

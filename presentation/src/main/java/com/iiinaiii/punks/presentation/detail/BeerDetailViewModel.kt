@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.detail
+package com.iiinaiii.punks.presentation.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.iiinaiii.punks.domain.GetBeerUseCase
 import com.iiinaiii.punks.domain.model.Result
 import com.iiinaiii.punks.domain.model.Beer
-import com.iiinaiii.punks.ui.detail.model.BeerDetailUiModel
+import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

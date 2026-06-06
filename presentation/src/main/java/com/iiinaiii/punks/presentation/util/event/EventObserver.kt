@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iiinaiii.punks.ui.util.event
+package com.iiinaiii.punks.presentation.util.event
 
 import androidx.lifecycle.Observer
 

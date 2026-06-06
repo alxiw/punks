@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.beers
+package com.iiinaiii.punks.presentation.beers
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

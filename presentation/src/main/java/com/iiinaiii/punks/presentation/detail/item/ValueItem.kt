@@ -1,8 +1,8 @@
-package com.iiinaiii.punks.ui.detail.item
+package com.iiinaiii.punks.presentation.detail.item
 
 import android.view.View
-import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ItemDetailValueBinding
+import com.iiinaiii.punks.presentation.R
+import com.iiinaiii.punks.presentation.databinding.ItemDetailValueBinding
 import com.xwray.groupie.viewbinding.BindableItem
 
 class ValueItem(

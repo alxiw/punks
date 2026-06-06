@@ -1,12 +1,12 @@
-package com.iiinaiii.punks.ui.beers
+package com.iiinaiii.punks.presentation.beers
 
 import android.app.Activity
 import android.app.ActivityOptions
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.iiinaiii.punks.databinding.ItemBeerBinding
-import com.iiinaiii.punks.ui.detail.BeerDetailActivity
+import com.iiinaiii.punks.presentation.databinding.ItemBeerBinding
+import com.iiinaiii.punks.presentation.detail.BeerDetailActivity
 
 class BeersAdapter(
     private val host: Activity,

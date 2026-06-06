@@ -13,8 +13,8 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity android:exported="true"
-      android:name=".ui.detail.BeerDetailActivity" />
-    <activity android:name=".ui.beers.BeersActivity"
+      android:name=".presentation.detail.BeerDetailActivity" />
+    <activity android:name=".presentation.beers.BeersActivity"
       android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

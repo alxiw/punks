@@ -51,16 +51,11 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":presentation"))
 
     // AndroidX
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
 
     // DI
     implementation(libs.hilt.android)
@@ -68,8 +63,6 @@ dependencies {
 
     // UI
     implementation(libs.material)
-    implementation(libs.groupie)
-    implementation(libs.groupie.viewbinding)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

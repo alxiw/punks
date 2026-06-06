@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.ui.detail
+package com.iiinaiii.punks.presentation.detail
 
 import android.content.Context
 import android.content.Intent
@@ -9,12 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import coil.load
-import com.iiinaiii.punks.R
-import com.iiinaiii.punks.databinding.ActivityBeerDetailBinding
 import com.iiinaiii.punks.domain.model.Beer
-import com.iiinaiii.punks.ui.detail.item.HeaderItem
-import com.iiinaiii.punks.ui.detail.item.SimpleTextItem
-import com.iiinaiii.punks.ui.detail.item.ValueItem
+import com.iiinaiii.punks.presentation.R
+import com.iiinaiii.punks.presentation.databinding.ActivityBeerDetailBinding
+import com.iiinaiii.punks.presentation.detail.item.HeaderItem
+import com.iiinaiii.punks.presentation.detail.item.SimpleTextItem
+import com.iiinaiii.punks.presentation.detail.item.ValueItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.viewbinding.GroupieViewHolder
