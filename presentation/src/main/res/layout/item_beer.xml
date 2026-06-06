@@ -38,23 +38,24 @@
     tools:text="Punk IPA 2007 - 2010" />
 
   <TextView
-    android:id="@+id/first_brew"
+    android:id="@+id/beer_abv"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:minWidth="50dp"
     android:layout_marginBottom="4dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="@+id/beer_name"
     app:layout_constraintTop_toBottomOf="@+id/beer_name"
-    tools:text="APRIL 2007" />
+    tools:text="12.5%" />
 
   <TextView
-    android:id="@+id/beer_abv"
+    android:id="@+id/first_brew"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    app:layout_constraintStart_toEndOf="@id/first_brew"
-    app:layout_constraintTop_toTopOf="@+id/first_brew"
-    tools:text="6.0%" />
+    android:layout_marginStart="8dp"
+    app:layout_constraintStart_toEndOf="@id/beer_abv"
+    app:layout_constraintTop_toTopOf="@+id/beer_abv"
+    tools:text="APRIL 2007" />
 
   <TextView
     android:id="@+id/beer_id"
