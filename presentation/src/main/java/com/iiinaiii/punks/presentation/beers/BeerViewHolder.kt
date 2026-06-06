@@ -38,7 +38,9 @@ class BeerViewHolder(
         val resources = binding.root.resources
         return arrayOf(
             Pair(binding.beerImage as View, resources.getString(R.string.transition_beer_image)),
-            Pair(binding.beerName as View, resources.getString(R.string.transition_beer_name))
+            Pair(binding.beerName as View, resources.getString(R.string.transition_beer_name)),
+            Pair(binding.beerAbv as View, resources.getString(R.string.transition_beer_abv)),
+            Pair(binding.firstBrew as View, resources.getString(R.string.transition_beer_date))
         )
     }
 

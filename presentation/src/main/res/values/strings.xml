@@ -22,4 +22,6 @@
   <!-- Transition name -->
   <string name="transition_beer_image">beer_image</string>
   <string name="transition_beer_name">beer_name</string>
+  <string name="transition_beer_abv">beer_abv</string>
+  <string name="transition_beer_date">beer_date</string>
 </resources>
