@@ -5,21 +5,27 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.databinding.ActivityBeerDetailBinding
 import com.iiinaiii.punks.presentation.detail.item.HeaderItem
 import com.iiinaiii.punks.presentation.detail.item.SimpleTextItem
 import com.iiinaiii.punks.presentation.detail.item.ValueItem
+import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class BeerDetailActivity : AppCompatActivity() {
@@ -33,25 +39,44 @@ class BeerDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_beer_detail)
-
-        val beerId = intent.getIntExtra(EXTRA_BEER_ID, -1)
-        check(beerId != -1) {
-            "Beer ID is invalid"
-        }
-
         setupRecyclerView()
-        viewModel.uiModel.observe(this, Observer { uiModel ->
-            val beer = uiModel.beer
-            binding.beerName.text = beer.name
-            binding.tagline.text = beer.tagline
-            binding.firstBrew.text = beer.firstBrewed
-            binding.topAbvValue.text = beer.abv
-            binding.topIbuValue.text = beer.ibu
-            binding.topOgValue.text = beer.targetOg
-            binding.beerPackage.load(beer.imageUrl)
+        observeUiState()
+    }
 
-            updateBeerRecyclerData(beer)
-        })
+    private fun observeUiState() {
+        viewModel.uiState
+            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .onEach(::render)
+            .launchIn(lifecycleScope)
+    }
+
+    private fun render(state: BeerDetailUiState) {
+        when (state) {
+            is BeerDetailUiState.Loading -> showLoading()
+            is BeerDetailUiState.Success -> showContent(state.model.beer)
+            is BeerDetailUiState.Error -> showError(state.exception)
+        }
+    }
+
+    private fun showLoading() {
+        // do nothing
+    }
+
+    private fun showError(e: Throwable) {
+        Snackbar.make(binding.root, R.string.beer_detail_error, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showContent(beer: Beer) {
+        with(binding) {
+            beerName.text = beer.name
+            tagline.text = beer.tagline
+            firstBrew.text = beer.firstBrewed
+            topAbvValue.text = beer.abv
+            topIbuValue.text = beer.ibu
+            topOgValue.text = beer.targetOg
+            beerPackage.load(beer.imageUrl)
+        }
+        updateBeerRecyclerData(beer)
     }
 
     private fun setupRecyclerView() {

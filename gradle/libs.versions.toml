@@ -11,7 +11,6 @@ appcompat = "1.7.1"
 constraintLayout = "2.2.1"
 recyclerview = "1.4.0"
 lifecycle = "2.10.0"
-lifecycleExt = "2.2.0"
 activity = "1.13.0"
 fragment = "1.8.9"
 viewbindingdelegate = "2.0.4"
@@ -35,7 +34,6 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "lifecycleExt" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
 viewbindingdelegate = { group = "dev.androidbroadcast.vbpd", name = "vbpd", version.ref = "viewbindingdelegate" }

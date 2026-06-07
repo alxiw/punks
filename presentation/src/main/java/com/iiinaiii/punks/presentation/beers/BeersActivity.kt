@@ -4,7 +4,9 @@ import android.app.ActivityOptions
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.presentation.R
@@ -13,6 +15,7 @@ import com.iiinaiii.punks.presentation.detail.BeerDetailActivity
 import com.iiinaiii.punks.presentation.util.setVisibility
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BeersActivity : AppCompatActivity() {
@@ -30,24 +33,22 @@ class BeersActivity : AppCompatActivity() {
         setContentView(R.layout.activity_beers)
 
         setupRecyclerView()
-        viewModel.uiModel.observe(this, Observer {
-            val uiModel = it ?: return@Observer
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiModel.collect { uiModel ->
+                    binding.loading.setVisibility(uiModel.showProgress)
+                    beersAdapter.showLoading = uiModel.showFooterProgress
 
-            binding.loading.setVisibility(uiModel.showProgress)
-            beersAdapter.showLoading = uiModel.showFooterProgress
+                    uiModel.showSuccess?.consume()?.let { beerResult ->
+                        updateBeers(beerResult.beers)
+                    }
 
-            if (uiModel.showSuccess != null && !uiModel.showSuccess.consumed) {
-                uiModel.showSuccess.consume()?.let { beerResult ->
-                    updateBeers(beerResult.beers)
+                    uiModel.showError?.consume()?.let {
+                        showError()
+                    }
                 }
             }
-
-            if (uiModel.showError != null && !uiModel.showError.consumed) {
-                uiModel.showError.consume()?.let {
-                    showError()
-                }
-            }
-        })
+        }
         viewModel.loadBeers()
     }
 

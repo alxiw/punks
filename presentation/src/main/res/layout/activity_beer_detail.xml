@@ -3,14 +3,14 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/detail_scroll"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fillViewport="true">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".ui.detail.BeerDetailActivity">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/start_guideline"
@@ -129,10 +129,10 @@
       android:id="@+id/first_brew"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
       android:layout_marginStart="4dp"
-      android:transitionName="@string/transition_beer_date"
+      android:layout_marginBottom="8dp"
       android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+      android:transitionName="@string/transition_beer_date"
       app:layout_constraintBottom_toTopOf="@+id/top_abv_title"
       app:layout_constraintStart_toEndOf="@+id/beer_package"
       tools:text="SEPTEMBER 2010" />

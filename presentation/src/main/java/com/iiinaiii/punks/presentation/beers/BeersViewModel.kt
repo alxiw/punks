@@ -1,16 +1,17 @@
 package com.iiinaiii.punks.presentation.beers
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iiinaiii.punks.domain.SearchBeersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.iiinaiii.punks.domain.model.Result
 import com.iiinaiii.punks.presentation.beers.model.BeerResultUiModel
-import com.iiinaiii.punks.presentation.beers.model.HomeUiModel
+import com.iiinaiii.punks.presentation.beers.model.UiState
 import com.iiinaiii.punks.presentation.util.event.Event
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,9 +21,8 @@ class BeersViewModel @Inject constructor(
     private val searchBeers: SearchBeersUseCase,
 ) : ViewModel(), DataLoadingSubject {
 
-    private val _uiModel = MutableLiveData<HomeUiModel>()
-    val uiModel: LiveData<HomeUiModel>
-        get() = _uiModel
+    private val _uiModel = MutableStateFlow(UiState())
+    val uiModel: StateFlow<UiState> = _uiModel.asStateFlow()
 
     override var isDataLoading = false
     private var isLastPageLoaded = false
@@ -66,6 +66,6 @@ class BeersViewModel @Inject constructor(
         showSuccess: Event<BeerResultUiModel>? = null,
         showError: Event<Unit>? = null
     ) {
-        _uiModel.postValue(HomeUiModel(showProgress, showFooterProgress, showSuccess, showError))
+        _uiModel.value = UiState(showProgress, showFooterProgress, showSuccess, showError)
     }
 }
