@@ -4,6 +4,7 @@ import com.iiinaiii.punks.presentation.util.event.Event
 
 data class HomeUiModel(
     val showProgress: Boolean,
+    val showFooterProgress: Boolean,
     val showSuccess: Event<BeerResultUiModel>?,
     val showError: Event<Unit>?
 )

@@ -36,7 +36,7 @@ class BeersViewModel @Inject constructor(
     }
 
     private fun getBeers(page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        withContext(Dispatchers.Main) { showLoading() }
+        withContext(Dispatchers.Main) { showLoading(page == 1) }
         isDataLoading = true
 
         val result = searchBeers(page)
@@ -52,15 +52,20 @@ class BeersViewModel @Inject constructor(
         }
     }
 
-    private fun showLoading() {
-        emitUiModel(showProgress = true)
+    private fun showLoading(isInitial: Boolean) {
+        if (isInitial) {
+            emitUiModel(showProgress = true)
+        } else {
+            emitUiModel(showFooterProgress = true)
+        }
     }
 
     private fun emitUiModel(
         showProgress: Boolean = false,
+        showFooterProgress: Boolean = false,
         showSuccess: Event<BeerResultUiModel>? = null,
         showError: Event<Unit>? = null
     ) {
-        _uiModel.postValue(HomeUiModel(showProgress, showSuccess, showError))
+        _uiModel.postValue(HomeUiModel(showProgress, showFooterProgress, showSuccess, showError))
     }
 }

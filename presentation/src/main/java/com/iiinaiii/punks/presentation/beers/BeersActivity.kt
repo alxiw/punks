@@ -29,6 +29,7 @@ class BeersActivity : AppCompatActivity() {
             val uiModel = it ?: return@Observer
 
             binding.loading.setVisibility(uiModel.showProgress)
+            beersAdapter.showLoading = uiModel.showFooterProgress
 
             if (uiModel.showSuccess != null && !uiModel.showSuccess.consumed) {
                 uiModel.showSuccess.consume()?.let { beerResult ->
@@ -60,10 +61,7 @@ class BeersActivity : AppCompatActivity() {
     }
 
     private fun updateBeers(beers: List<BeerItemUiModel>) {
-        beersAdapter.also {
-            it.beers.addAll(beers)
-            it.notifyDataSetChanged()
-        }
+        beersAdapter.addBeers(beers)
     }
 
     private fun showError() {
