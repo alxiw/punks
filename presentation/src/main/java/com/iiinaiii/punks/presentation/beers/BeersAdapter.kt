@@ -1,18 +1,16 @@
 package com.iiinaiii.punks.presentation.beers
 
-import android.app.Activity
-import android.app.ActivityOptions
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.iiinaiii.punks.presentation.databinding.ItemBeerBinding
 import com.iiinaiii.punks.presentation.databinding.ItemLoadingBinding
-import com.iiinaiii.punks.presentation.detail.BeerDetailActivity
 
 class BeersAdapter(
-    private val host: Activity,
-    val beers: MutableList<BeerItemUiModel> = mutableListOf()
+    private val onItemClick: (BeerViewHolder.TransitionData) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val beers: MutableList<BeerItemUiModel> = mutableListOf()
 
     companion object {
         private const val TYPE_BEER = 0
@@ -38,7 +36,7 @@ class BeersAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == TYPE_BEER) {
             val binding = ItemBeerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            BeerViewHolder(binding) { data -> openBeerDetail(data) }
+            BeerViewHolder(binding) { data -> onItemClick(data) }
         } else {
             val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             LoadingViewHolder(binding)
@@ -57,11 +55,6 @@ class BeersAdapter(
         val startPosition = beers.size
         beers.addAll(newBeers)
         notifyItemRangeInserted(startPosition, newBeers.size)
-    }
-
-    private fun openBeerDetail(data: BeerViewHolder.TransitionData) {
-        val activityOptions = ActivityOptions.makeSceneTransitionAnimation(host, *data.sharedElements)
-        host.startActivity(BeerDetailActivity.createIntent(host, data.beer.id), activityOptions.toBundle())
     }
 
     class LoadingViewHolder(binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)

@@ -1,5 +1,6 @@
 package com.iiinaiii.punks.presentation.beers
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -8,21 +9,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.databinding.ActivityBeersBinding
+import com.iiinaiii.punks.presentation.detail.BeerDetailActivity
 import com.iiinaiii.punks.presentation.util.setVisibility
 import dagger.hilt.android.AndroidEntryPoint
+import dev.androidbroadcast.vbpd.viewBinding
 
 @AndroidEntryPoint
 class BeersActivity : AppCompatActivity() {
 
     private val viewModel: BeersViewModel by viewModels()
-    private lateinit var beersAdapter: BeersAdapter
 
-    private lateinit var binding: ActivityBeersBinding
+    private val binding by viewBinding(ActivityBeersBinding::bind)
+
+    private val beersAdapter: BeersAdapter = BeersAdapter(
+        onItemClick = { data -> openBeerDetail(data) }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityBeersBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_beers)
 
         setupRecyclerView()
         viewModel.uiModel.observe(this, Observer {
@@ -47,7 +52,6 @@ class BeersActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        beersAdapter = BeersAdapter(this)
         binding.homeRecyclerView.apply {
             val linearLayoutManager = LinearLayoutManager(this@BeersActivity)
             layoutManager = linearLayoutManager
@@ -66,5 +70,10 @@ class BeersActivity : AppCompatActivity() {
 
     private fun showError() {
         Snackbar.make(binding.root, R.string.beer_search_error, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun openBeerDetail(data: BeerViewHolder.TransitionData) {
+        val activityOptions = ActivityOptions.makeSceneTransitionAnimation(this, *data.sharedElements)
+        startActivity(BeerDetailActivity.createIntent(this, data.beer.id), activityOptions.toBundle())
     }
 }

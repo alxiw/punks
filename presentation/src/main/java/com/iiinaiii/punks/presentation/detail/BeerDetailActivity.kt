@@ -19,19 +19,20 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
+import dev.androidbroadcast.vbpd.viewBinding
 
 @AndroidEntryPoint
 class BeerDetailActivity : AppCompatActivity() {
 
     private val viewModel: BeerDetailViewModel by viewModels()
 
-    private lateinit var binding: ActivityBeerDetailBinding
+    private val binding by viewBinding(ActivityBeerDetailBinding::bind)
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder<ViewBinding>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityBeerDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_beer_detail)
 
         val beerId = intent.getIntExtra(EXTRA_BEER_ID, -1)
         check(beerId != -1) {

@@ -3,39 +3,42 @@ compileSdk = "37"
 minSdk = "26"
 targetSdk = "37"
 
-androidx = "1.4.0"
+agp = "9.2.1"
+kotlin = "2.3.0"
+ksp = "2.3.9"
+coreKtx = "1.19.0"
 appcompat = "1.7.1"
 constraintLayout = "2.2.1"
-coreKtx = "1.19.0"
-coroutines = "1.11.0"
-dagger = "2.59.2"
-coil = "2.7.0"
-groupie = "2.10.1"
-kotlin = "2.3.0"
+recyclerview = "1.4.0"
 lifecycle = "2.10.0"
+lifecycleExt = "2.2.0"
 activity = "1.13.0"
 fragment = "1.8.9"
+viewbindingdelegate = "2.0.4"
 material = "1.14.0"
+groupie = "2.10.1"
+dagger = "2.59.2"
+coroutines = "1.11.0"
 moshi = "1.15.2"
 okhttp = "5.3.2"
 retrofit = "3.0.0"
 retrofitCoroutines = "0.9.2"
+coil = "2.7.0"
 threeten = "1.4.9"
-ksp = "2.3.9"
 junit = "4.13.2"
 androidxTest = "1.7.0"
 espresso = "3.7.0"
-agp = "9.2.1"
 
 [libraries]
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
-androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version = "2.2.0" }
+androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "lifecycleExt" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
+viewbindingdelegate = { group = "dev.androidbroadcast.vbpd", name = "vbpd", version.ref = "viewbindingdelegate" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
@@ -70,5 +73,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
