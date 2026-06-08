@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.data.remote.NetworkHandler
+import com.iiinaiii.punks.data.remote.util.CacheUtil
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -24,7 +25,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object DataModule {
 
-    private const val CACHE_SIZE = 10 * 1024 * 1024L // 10 MB
     private const val CACHE_MAX_STALE = 60 * 60 * 24 * 7 // 7 days
     private const val CACHE_MAX_AGE = 60 * 3 // 3 minutes
 
@@ -37,7 +37,10 @@ internal object DataModule {
     @Provides
     @Singleton
     internal fun provideCache(@ApplicationContext context: Context): Cache {
-        return Cache(File(context.cacheDir, "http_cache"), CACHE_SIZE)
+        val cacheDir: File = CacheUtil.createDefaultCacheDir(context)
+        val maxSize = CacheUtil.calculateDiskCacheSize(cacheDir)
+
+        return Cache(cacheDir, maxSize)
     }
 
     @Provides
