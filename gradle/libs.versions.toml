@@ -24,6 +24,7 @@ okhttp = "5.3.2"
 retrofit = "3.0.0"
 coil = "2.7.0"
 threeten = "1.4.9"
+room = "2.8.4"
 junit = "4.13.2"
 androidxTest = "1.7.0"
 espresso = "3.7.0"
@@ -62,6 +63,11 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threeten" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
+
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTest" }
