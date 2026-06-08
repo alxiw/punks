@@ -1,8 +1,8 @@
-package com.iiinaiii.punks.presentation.beers
+package com.iiinaiii.punks.presentation.beers.model
 
 import com.iiinaiii.punks.domain.model.Beer
 
-data class BeerItemUiModel(
+internal data class BeerItemUiModel(
     val id: Int,
     val name: String,
     val firstBrewed: String,
@@ -10,9 +10,7 @@ data class BeerItemUiModel(
     val abv: String
 )
 
-fun List<Beer>.toItemUiModels() = map { it.toItemUiModel() }
-
-fun Beer.toItemUiModel() = BeerItemUiModel(
+internal fun Beer.toItemUiModel() = BeerItemUiModel(
     id = id,
     name = name,
     imageUrl = imageUrl,

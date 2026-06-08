@@ -1,28 +1,29 @@
 <resources>
-  <!-- Beers Search -->
-  <string name="beer_search_error">No beer data exists.</string>
+    <!-- Beers Search -->
+    <string name="beer_search_error">Error while receiving beers: %s</string>
+    <string name="retry">Retry</string>
 
-  <!-- Beer Detail -->
-  <string name="abv">ABV</string>
-  <string name="ibu">IBU</string>
-  <string name="og">OG</string>
-  <string name="volume">VOLUME</string>
-  <string name="target_fg">Target FG</string>
-  <string name="target_og">Target OG</string>
-  <string name="ebc">EBC</string>
-  <string name="srm">SRM</string>
-  <string name="ph">PH</string>
-  <string name="attenuation_level">ATTENUATION LEVEL</string>
-  <string name="boil_volume">BOIL VOLUME</string>
-  <string name="header_description">THIS BEER IS</string>
-  <string name="header_basics">BASICS</string>
-  <string name="header_food_pairing">FOOD PAIRING</string>
-  <string name="header_brewers_tips">BREWER\'S TIPS</string>
-  <string name="beer_detail_error">Error while receiving beer data</string>
+    <!-- Beer Detail -->
+    <string name="abv">ABV</string>
+    <string name="ibu">IBU</string>
+    <string name="og">OG</string>
+    <string name="volume">VOLUME</string>
+    <string name="target_fg">Target FG</string>
+    <string name="target_og">Target OG</string>
+    <string name="ebc">EBC</string>
+    <string name="srm">SRM</string>
+    <string name="ph">PH</string>
+    <string name="attenuation_level">ATTENUATION LEVEL</string>
+    <string name="boil_volume">BOIL VOLUME</string>
+    <string name="header_description">THIS BEER IS</string>
+    <string name="header_basics">BASICS</string>
+    <string name="header_food_pairing">FOOD PAIRING</string>
+    <string name="header_brewers_tips">BREWER\'S TIPS</string>
+    <string name="beer_detail_error">Error while receiving beer data: %s</string>
 
-  <!-- Transition name -->
-  <string name="transition_beer_image">beer_image</string>
-  <string name="transition_beer_name">beer_name</string>
-  <string name="transition_beer_abv">beer_abv</string>
-  <string name="transition_beer_date">beer_date</string>
+    <!-- Transition name -->
+    <string name="transition_beer_image">beer_image</string>
+    <string name="transition_beer_name">beer_name</string>
+    <string name="transition_beer_abv">beer_abv</string>
+    <string name="transition_beer_date">beer_date</string>
 </resources>

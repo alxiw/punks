@@ -18,5 +18,6 @@ data class Beer(
     val ph: String,
     val attenuationLevel: String,
     val foodPairing: List<String>,
-    val brewersTips: String
+    val brewersTips: String,
+    val contributedBy: String
 )

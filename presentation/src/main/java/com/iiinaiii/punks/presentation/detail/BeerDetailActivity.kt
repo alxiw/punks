@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -12,12 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.databinding.ActivityBeerDetailBinding
 import com.iiinaiii.punks.presentation.detail.item.HeaderItem
 import com.iiinaiii.punks.presentation.detail.item.SimpleTextItem
 import com.iiinaiii.punks.presentation.detail.item.ValueItem
+import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiModel
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -53,7 +54,7 @@ class BeerDetailActivity : AppCompatActivity() {
     private fun render(state: BeerDetailUiState) {
         when (state) {
             is BeerDetailUiState.Loading -> showLoading()
-            is BeerDetailUiState.Success -> showContent(state.model.beer)
+            is BeerDetailUiState.Success -> showContent(state.model)
             is BeerDetailUiState.Error -> showError(state.exception)
         }
     }
@@ -63,17 +64,21 @@ class BeerDetailActivity : AppCompatActivity() {
     }
 
     private fun showError(e: Throwable) {
-        Snackbar.make(binding.root, R.string.beer_detail_error, Snackbar.LENGTH_SHORT).show()
+        val string = resources.getString(R.string.beer_detail_error, e.message ?: "\uD83E\uDD37")
+        Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun showContent(beer: Beer) {
+    private fun showContent(beer: BeerDetailUiModel) {
         with(binding) {
             beerName.text = beer.name
             tagline.text = beer.tagline
             firstBrew.text = beer.firstBrewed
             topAbvValue.text = beer.abv
+            topAbvTitle.isVisible = true
             topIbuValue.text = beer.ibu
+            topIbuTitle.isVisible = true
             topOgValue.text = beer.targetOg
+            topOgTitle.isVisible = true
             beerPackage.load(beer.imageUrl)
         }
         updateBeerRecyclerData(beer)
@@ -87,7 +92,7 @@ class BeerDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateBeerRecyclerData(beer: Beer) {
+    private fun updateBeerRecyclerData(beer: BeerDetailUiModel) {
         // Description
         val descriptionSection = Section().apply {
             setHeader(HeaderItem(getString(R.string.header_description)))

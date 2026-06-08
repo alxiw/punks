@@ -1,11 +1,14 @@
 package com.iiinaiii.punks.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.iiinaiii.punks.data.remote.BeerPagingSource
 import com.iiinaiii.punks.data.remote.BeersRemoteDataSource
-import com.iiinaiii.punks.data.remote.api.model.BeerResponse
 import com.iiinaiii.punks.data.remote.api.model.toBeer
 import com.iiinaiii.punks.domain.BeersRepository
 import com.iiinaiii.punks.domain.model.Beer
-import com.iiinaiii.punks.domain.model.Result
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,33 +17,13 @@ internal class BeersRepositoryImpl @Inject constructor(
     private val remoteDataSource: BeersRemoteDataSource
 ) : BeersRepository {
 
-    private val beerCache = mutableMapOf<Int, BeerResponse>()
+    override fun getBeersFlow(): Flow<PagingData<Beer>> = Pager(
+        config = PagingConfig(
+            pageSize = 30,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { BeerPagingSource(remoteDataSource) }
+    ).flow
 
-    override suspend fun search(
-        page: Int
-    ): Result<List<Beer>> {
-        val result = remoteDataSource.search(page)
-        return when (result) {
-            is Result.Success -> {
-                cache(result.data)
-                Result.Success(result.data.map { it.toBeer() })
-            }
-            is Result.Error -> result
-        }
-    }
-
-    override suspend fun getBeer(
-        id: Int
-    ): Result<Beer> {
-        val beer = beerCache[id]
-        return if (beer != null) {
-            Result.Success(beer.toBeer())
-        } else {
-            Result.Error(IllegalStateException("Beer $id not cached"))
-        }
-    }
-
-    private fun cache(data: List<BeerResponse>) {
-        data.associateByTo(beerCache) { it.id }
-    }
+    override suspend fun getBeer(id: Int): Result<Beer> = remoteDataSource.getBeer(id).map { it.toBeer() }
 }

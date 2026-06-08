@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.data.remote.api.util
+package com.iiinaiii.punks.data.remote.util
 
 import org.threeten.bp.Year
 import org.threeten.bp.YearMonth

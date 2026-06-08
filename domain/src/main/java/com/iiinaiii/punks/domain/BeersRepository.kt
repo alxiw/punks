@@ -1,9 +1,10 @@
 package com.iiinaiii.punks.domain
 
+import androidx.paging.PagingData
 import com.iiinaiii.punks.domain.model.Beer
-import com.iiinaiii.punks.domain.model.Result
+import kotlinx.coroutines.flow.Flow
 
 interface BeersRepository {
-    suspend fun search(page: Int): Result<List<Beer>>
+    fun getBeersFlow(): Flow<PagingData<Beer>>
     suspend fun getBeer(id: Int): Result<Beer>
 }

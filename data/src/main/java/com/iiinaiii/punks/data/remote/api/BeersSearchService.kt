@@ -2,23 +2,22 @@ package com.iiinaiii.punks.data.remote.api
 
 import android.net.Uri
 import com.iiinaiii.punks.data.remote.api.model.BeerResponse
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface BeersSearchService {
+internal interface BeersSearchService {
 
     @GET("beers")
-    fun search(
+    suspend fun getBeers(
         @Query("page") page: Int
-    ): Deferred<Response<List<BeerResponse>>>
+    ): Response<List<BeerResponse>>
 
     @GET("beers/{id}")
-    fun getBeer(
+    suspend fun getBeer(
         @Path("id") id: Int
-    ): Deferred<Response<BeerResponse>>
+    ): Response<BeerResponse>
 
     companion object {
         val ENDPOINT = Uri.Builder().scheme("https")

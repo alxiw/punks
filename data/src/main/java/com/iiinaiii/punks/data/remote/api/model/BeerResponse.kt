@@ -1,12 +1,12 @@
 package com.iiinaiii.punks.data.remote.api.model
 
-import com.iiinaiii.punks.data.remote.api.util.toDateOrDefault
-import com.iiinaiii.punks.data.remote.api.util.toStringOrDefault
-import com.iiinaiii.punks.data.remote.api.util.toVolumeText
+import com.iiinaiii.punks.data.remote.util.toDateOrDefault
+import com.iiinaiii.punks.data.remote.util.toStringOrDefault
+import com.iiinaiii.punks.data.remote.util.toVolumeText
 import com.iiinaiii.punks.domain.model.Beer
 import com.squareup.moshi.Json
 
-data class BeerResponse(
+internal data class BeerResponse(
     val id: Int,
     val name: String,
     val tagline: String,
@@ -24,15 +24,16 @@ data class BeerResponse(
     val ph: Float?,
     @Json(name = "attenuation_level") val attenuationLevel: Float?,
     @Json(name = "food_pairing") val foodPairing: List<String>,
-    @Json(name = "brewers_tips") val brewersTips: String
+    @Json(name = "brewers_tips") val brewersTips: String,
+    @Json(name = "contributed_by") val contributedBy: String,
 )
 
-data class VolumeResponse(
+internal data class VolumeResponse(
     val value: Int,
     val unit: String
 )
 
-fun BeerResponse.toBeer() = Beer(
+internal fun BeerResponse.toBeer() = Beer(
     id = id,
     name = name,
     tagline = tagline,
@@ -50,5 +51,6 @@ fun BeerResponse.toBeer() = Beer(
     ph = ph.toStringOrDefault(),
     attenuationLevel = attenuationLevel.toStringOrDefault(),
     foodPairing = foodPairing,
-    brewersTips = brewersTips
+    brewersTips = brewersTips,
+    contributedBy = contributedBy
 )

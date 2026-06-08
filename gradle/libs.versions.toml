@@ -18,10 +18,10 @@ material = "1.14.0"
 groupie = "2.10.1"
 dagger = "2.59.2"
 coroutines = "1.11.0"
+paging = "3.5.0"
 moshi = "1.15.2"
 okhttp = "5.3.2"
 retrofit = "3.0.0"
-retrofitCoroutines = "0.9.2"
 coil = "2.7.0"
 threeten = "1.4.9"
 junit = "4.13.2"
@@ -50,7 +50,6 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
-retrofit-coroutines-adapter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlin-coroutines-adapter", version.ref = "retrofitCoroutines" }
 
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
@@ -61,6 +60,8 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
 threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threeten" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTest" }

@@ -47,12 +47,14 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
+    // Paging
+    implementation(libs.androidx.paging.common)
+
     // Network
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
-    implementation(libs.retrofit.coroutines.adapter)
 
     // Json
     implementation(libs.moshi.kotlin)

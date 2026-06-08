@@ -5,7 +5,7 @@ import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.databinding.ItemDetailValueBinding
 import com.xwray.groupie.viewbinding.BindableItem
 
-class ValueItem(
+internal class ValueItem(
     private val title: String,
     private val value: String
 ) : BindableItem<ItemDetailValueBinding>() {

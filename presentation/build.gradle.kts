@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+
     // Images
     implementation(libs.coil)
 }

@@ -5,7 +5,7 @@ import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.databinding.ItemDetailHeaderBinding
 import com.xwray.groupie.viewbinding.BindableItem
 
-class HeaderItem(private val text: String) : BindableItem<ItemDetailHeaderBinding>() {
+internal class HeaderItem(private val text: String) : BindableItem<ItemDetailHeaderBinding>() {
     override fun getLayout() = R.layout.item_detail_header
 
     override fun bind(viewBinding: ItemDetailHeaderBinding, position: Int) {

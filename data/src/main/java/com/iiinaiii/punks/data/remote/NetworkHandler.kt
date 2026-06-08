@@ -1,8 +1,10 @@
-package com.iiinaiii.punks.data.remote.api.util
+package com.iiinaiii.punks.data.remote
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.annotation.RequiresPermission
 
 class NetworkHandler(context: Context) {
 
@@ -10,8 +12,10 @@ class NetworkHandler(context: Context) {
         .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     val isConnected: Boolean
+        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
         get() = isNetworkAvailable()
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     private fun isNetworkAvailable(): Boolean {
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
 
