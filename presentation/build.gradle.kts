@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 configure<LibraryExtension> {
@@ -16,17 +16,15 @@ configure<LibraryExtension> {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     buildFeatures {
-        viewBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -46,12 +44,6 @@ dependencies {
     // AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.viewbindingdelegate)
 
     // DI
     implementation(libs.hilt.android)
@@ -59,8 +51,6 @@ dependencies {
 
     // UI
     implementation(libs.material)
-    implementation(libs.groupie)
-    implementation(libs.groupie.viewbinding)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
@@ -68,7 +58,22 @@ dependencies {
 
     // Paging
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     // Images
     implementation(libs.coil)
+    implementation(libs.coil.compose)
+
+    // Compose
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    debugImplementation(libs.compose.ui.tooling)
 }

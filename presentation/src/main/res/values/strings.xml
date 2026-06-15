@@ -2,6 +2,7 @@
     <!-- Beers Search -->
     <string name="beer_search_error">Error while receiving beers: %s</string>
     <string name="retry">Retry</string>
+    <string name="empty">No beers 😔</string>
 
     <!-- Beer Detail -->
     <string name="abv">ABV</string>

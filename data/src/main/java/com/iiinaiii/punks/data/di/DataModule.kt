@@ -23,7 +23,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object DataModule {
+object DataModule {
 
     private const val CACHE_MAX_STALE = 60 * 60 * 24 * 7 // 7 days
     private const val CACHE_MAX_AGE = 60 * 3 // 3 minutes
@@ -53,7 +53,7 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    internal fun provideOkHttpClient(cache: Cache, handler: NetworkHandler): OkHttpClient {
+    fun provideOkHttpClient(cache: Cache, handler: NetworkHandler): OkHttpClient {
         val interceptor = HttpLoggingInterceptor { message -> Log.d("HELLO", message) }
             .apply { level = HttpLoggingInterceptor.Level.BASIC }
         return OkHttpClient.Builder()

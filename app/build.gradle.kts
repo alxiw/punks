@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 configure<ApplicationExtension> {
@@ -22,15 +22,13 @@ configure<ApplicationExtension> {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
     buildFeatures {
-        viewBinding = true
-        buildConfig = true
+        compose = true
     }
     
     compileOptions {
@@ -51,23 +49,27 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":presentation"))
 
-    // AndroidX
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
     // DI
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // UI
-    implementation(libs.material)
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
     // Images
     implementation(libs.coil)
+
+    // Compose
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    debugImplementation(libs.compose.ui.tooling)
 
     // Test
     testImplementation(libs.junit)

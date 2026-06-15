@@ -23,11 +23,10 @@ class BeerDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<BeerDetailUiState>(BeerDetailUiState.Loading)
     internal val uiState: StateFlow<BeerDetailUiState> = _uiState.asStateFlow()
 
-    private val beerId: Int = requireNotNull(savedStateHandle["extra_beer_id"]) {
-        "BeerDetailViewModel requires extra_beer_id in SavedStateHandle"
-    }
-
     init {
+        val beerId: Int = requireNotNull(savedStateHandle["beerId"]) {
+            "BeerDetailViewModel requires beerId in SavedStateHandle"
+        }
         loadBeer(beerId)
     }
 
