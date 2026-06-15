@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":presentation"))
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.material)
 
     // DI

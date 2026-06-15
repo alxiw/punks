@@ -115,12 +115,27 @@ private fun BeerDetailContent(
                 Text(
                     text = beer.tagline,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "tagline-${beer.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
                 )
                 Text(
                     text = beer.description,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp)
+                )
+
+                Text(
+                    text = beer.firstBrewed,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .sharedElement(
+                            sharedContentState = rememberSharedContentState(key = "date-${beer.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
                 )
 
                 DetailSection("Basics") {
@@ -155,16 +170,16 @@ private fun DetailRow(label: String, value: String) {
 private fun BeerDetailContentPreview() {
     val sampleBeer = BeerDetailUiModel(
         id = 1,
-        name = "Punk IPA 2007 - 2010",
-        tagline = "Post Modern Classic. Pale Ale.",
-        firstBrewed = "APRIL 2007",
-        description = "Our flagship beer that kick started the craft beer revolution. This is the beer that started it all - and it’s still as relevant today as it was back in 2007.",
-        imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/001.png",
-        abv = "6",
-        ibu = "60",
+        name = "Lost Lager",
+        tagline = "Dry-Hopped Pilsner.",
+        firstBrewed = "DECEMBER 2018",
+        description = "A pilsner that combines the light, crisp and clean lager profile provided by Weihenstephan's house yeast, with the vibrant citrus and stonefruit aromas associated with new German hop Saphir. This lager is easy-going but has subtle depths; toast, hints of spice and a zesty lime marmalade character.",
+        imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/366.png",
+        abv = "4.5",
+        ibu = "37",
         targetOg = "1056",
         targetFg = "1010",
-        ebc = "17",
+        ebc = "5",
         srm = "8.5",
         volume = "20L",
         boilVolume = "25L",

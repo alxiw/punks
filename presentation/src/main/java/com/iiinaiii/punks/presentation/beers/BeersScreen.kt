@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +47,6 @@ import coil.request.ImageRequest
 import coil.size.Precision
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.beers.model.BeerItemUiModel
-import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -59,19 +59,26 @@ fun BeersScreen(
     val beers = viewModel.beersFlow.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        BeersList(
-            beers = beers,
-            animatedVisibilityScope = animatedVisibilityScope,
-            sharedTransitionScope = sharedTransitionScope,
-            onBeerClick = onBeerClick
-        )
-
-        if (beers.loadState.refresh is LoadState.Loading) {
-            BeersLoading(modifier = Modifier.align(Alignment.Center))
-        }
-
-        if (beers.loadState.refresh is LoadState.NotLoading && beers.itemCount == 0) {
-            BeersEmpty(modifier = Modifier.align(Alignment.Center))
+        // use beers.loadState.mediator?.refresh with higher priority when use remote mediator
+        when (val refreshState = beers.loadState.refresh) {
+            is LoadState.Loading -> BeersLoading(modifier = Modifier.align(Alignment.Center))
+            is LoadState.Error -> BeersError(
+                message = refreshState.error.localizedMessage ?: "Unknown error",
+                onRetry = { beers.retry() },
+                modifier = Modifier.align(Alignment.Center)
+            )
+            is LoadState.NotLoading -> {
+                if (beers.itemCount == 0) {
+                    BeersEmpty(modifier = Modifier.align(Alignment.Center))
+                } else {
+                    BeersList(
+                        beers = beers,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        sharedTransitionScope = sharedTransitionScope,
+                        onBeerClick = onBeerClick
+                    )
+                }
+            }
         }
     }
 }
@@ -90,6 +97,24 @@ private fun BeersEmpty(modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+private fun BeersError(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = message, color = MaterialTheme.colorScheme.error)
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onRetry) {
+            Text(text = "Retry")
+        }
+    }
+}
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun BeersList(
@@ -98,14 +123,15 @@ private fun BeersList(
     sharedTransitionScope: SharedTransitionScope,
     onBeerClick: (Int) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         items(
             count = beers.itemCount,
             key = beers.itemKey { it.id },
             contentType = beers.itemContentType { "beer" }
         ) { index ->
-            val beer = beers[index]
-            if (beer != null) {
+            beers[index]?.let { beer ->
                 BeerItem(
                     beer = beer,
                     animatedVisibilityScope = animatedVisibilityScope,
@@ -132,76 +158,94 @@ private fun BeerItem(
     sharedTransitionScope: SharedTransitionScope,
     onClick: () -> Unit
 ) {
-    with(sharedTransitionScope) {
-        Row(
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(beer.imageUrl)
+                .crossfade(true)
+                .precision(Precision.EXACT)
+                .build(),
+            contentDescription = null,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .clickable(onClick = onClick)
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(width = 50.dp, height = 75.dp)
+                .sharedElementIfNotPreview(
+                    sharedTransitionScope = sharedTransitionScope,
+                    key = "image-${beer.id}",
+                    animatedVisibilityScope = animatedVisibilityScope
+                ),
+            contentScale = ContentScale.Fit
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(vertical = 4.dp)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(beer.imageUrl)
-                    .crossfade(true)
-                    .precision(Precision.EXACT)
-                    .build(),
-                contentDescription = null,
+            Text(
+                text = beer.name,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .size(width = 40.dp, height = 60.dp)
-                    .sharedElement(
-                        sharedContentState = rememberSharedContentState(key = "image-${beer.id}"),
+                    .sharedElementIfNotPreview(
+                        sharedTransitionScope = sharedTransitionScope,
+                        key = "name-${beer.id}",
                         animatedVisibilityScope = animatedVisibilityScope
                     ),
-                contentScale = ContentScale.Fit
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
+            Text(
+                text = beer.tagline,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = beer.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement(
-                        sharedContentState = rememberSharedContentState(key = "name-${beer.id}"),
+                    .sharedElementIfNotPreview(
+                        sharedTransitionScope = sharedTransitionScope,
+                        key = "tagline-${beer.id}",
                         animatedVisibilityScope = animatedVisibilityScope
                     )
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = beer.abv,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .width(50.dp)
+                        .sharedElementIfNotPreview(
+                            sharedTransitionScope = sharedTransitionScope,
+                            key = "abv-${beer.id}",
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = beer.abv,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .width(50.dp)
-                            .sharedElement(
-                                rememberSharedContentState(key = "abv-${beer.id}"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                    )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = beer.firstBrewed,
+                    modifier = Modifier
+                        .weight(1f)
+                        .sharedElementIfNotPreview(
+                            sharedTransitionScope = sharedTransitionScope,
+                            key = "date-${beer.id}",
+                            animatedVisibilityScope = animatedVisibilityScope
+                        ),
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-                    Text(
-                        text = beer.firstBrewed,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp).weight(1f))
-
-                    Text(
-                        text = "#${beer.id}",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
+                Text(
+                    text = "#${beer.id}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
         }
     }
@@ -212,8 +256,8 @@ private fun LoadingItem() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .padding(horizontal = 16.dp),
+            .height(80.dp)
+            .padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
@@ -228,8 +272,8 @@ private fun ErrorItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .padding(horizontal = 16.dp),
+            .height(80.dp)
+            .padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -237,10 +281,12 @@ private fun ErrorItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = error.localizedMessage ?: "",
+                text = error.localizedMessage ?: "Unknown error",
                 style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(bottom = 8.dp),
             )
             Button(
                 onClick = onClick,
@@ -253,6 +299,23 @@ private fun ErrorItem(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun Modifier.sharedElementIfNotPreview(
+    sharedTransitionScope: SharedTransitionScope,
+    key: Any,
+    animatedVisibilityScope: AnimatedVisibilityScope
+): Modifier {
+    val isPreview = LocalInspectionMode.current
+    return if (isPreview) this
+    else with(sharedTransitionScope) {
+        this@sharedElementIfNotPreview.sharedElement(
+            sharedContentState = rememberSharedContentState(key = key),
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }
 
@@ -272,49 +335,14 @@ private fun BeersEmptyPreview() {
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
-private fun BeersListPreview() {
-    val beers = flowOf(
-        PagingData.from(
-            data = listOf(
-                BeerItemUiModel(
-                    id = 1,
-                    name = "Punk IPA 2007 - 2010",
-                    firstBrewed = "APRIL 2007",
-                    imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/001.png",
-                    abv = "6%"
-                ),
-                BeerItemUiModel(
-                    id = 2,
-                    name = "Punk IPA 2010 - Current",
-                    firstBrewed = "OCTOBER 2010",
-                    imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/002.png",
-                    abv = "5.6%"
-                )
-            ),
-            sourceLoadStates = LoadStates(
-                refresh = LoadState.NotLoading(endOfPaginationReached = false),
-                prepend = LoadState.NotLoading(endOfPaginationReached = false),
-                append = LoadState.NotLoading(endOfPaginationReached = false)
-            )
+private fun BeersErrorPreview() {
+    MaterialTheme {
+        BeersError(
+            message = "Something went wrong",
+            onRetry = {}
         )
-    ).collectAsLazyPagingItems()
-
-    SharedTransitionLayout {
-        AnimatedVisibility(visible = true) {
-            MaterialTheme {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    BeersList(
-                        beers = beers,
-                        animatedVisibilityScope = this@AnimatedVisibility,
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        onBeerClick = {}
-                    )
-                }
-            }
-        }
     }
 }
 
@@ -334,5 +362,30 @@ private fun ErrorItemPreview() {
             error = Exception("Something went wrong"),
             onClick = {}
         )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun BeerItemPreview() {
+    SharedTransitionLayout {
+        AnimatedVisibility(visible = true) {
+            MaterialTheme {
+                BeerItem(
+                    beer = BeerItemUiModel(
+                        id = 366,
+                        name = "Lost Lager",
+                        tagline = "Dry-Hopped Pilsner.",
+                        firstBrewed = "DECEMBER 2018",
+                        imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/001.png",
+                        abv = "4.5%"
+                    ),
+                    animatedVisibilityScope = this@AnimatedVisibility,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    onClick = {}
+                )
+            }
+        }
     }
 }
