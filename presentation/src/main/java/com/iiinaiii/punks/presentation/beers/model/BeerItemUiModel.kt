@@ -8,7 +8,8 @@ internal data class BeerItemUiModel(
     val tagline: String,
     val firstBrewed: String,
     val imageUrl: String,
-    val abv: String
+    val abv: String,
+    val isFavorite: Boolean = false
 )
 
 internal fun Beer.toItemUiModel() = BeerItemUiModel(
@@ -17,5 +18,6 @@ internal fun Beer.toItemUiModel() = BeerItemUiModel(
     tagline = tagline,
     imageUrl = imageUrl,
     firstBrewed = firstBrewed,
-    abv = abv
+    abv = abv,
+    isFavorite = false
 )

@@ -23,8 +23,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,7 +95,7 @@ fun BeersScreen(
                                 shape = CircleShape
                             )
                     ) {
-                        Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favorites")
+                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorites")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -241,30 +242,49 @@ private fun BeerItem(
                 .weight(1f)
                 .padding(vertical = 4.dp)
         ) {
-            Text(
-                text = beer.name,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .sharedElementIfNotPreview(
-                        sharedTransitionScope = sharedTransitionScope,
-                        key = "name-${beer.id}",
-                        animatedVisibilityScope = animatedVisibilityScope
-                    ),
-            )
-            Text(
-                text = beer.tagline,
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .sharedElementIfNotPreview(
-                        sharedTransitionScope = sharedTransitionScope,
-                        key = "tagline-${beer.id}",
-                        animatedVisibilityScope = animatedVisibilityScope
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = beer.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .sharedElementIfNotPreview(
+                                sharedTransitionScope = sharedTransitionScope,
+                                key = "name-${beer.id}",
+                                animatedVisibilityScope = animatedVisibilityScope
+                            ),
                     )
-            )
+                    Text(
+                        text = beer.tagline,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .sharedElementIfNotPreview(
+                                sharedTransitionScope = sharedTransitionScope,
+                                key = "tagline-${beer.id}",
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                    )
+                }
+
+                Icon(
+                    painter = if (beer.isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
+                    contentDescription = null,
+                    tint = if (beer.isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(top = 6.dp, start = 8.dp)
+                        .size(42.dp)
+                )
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -430,7 +450,8 @@ private fun BeerItemPreview() {
                         tagline = "Dry-Hopped Pilsner.",
                         firstBrewed = "DECEMBER 2018",
                         imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/001.png",
-                        abv = "4.5%"
+                        abv = "4.5%",
+                        isFavorite = true
                     ),
                     animatedVisibilityScope = this@AnimatedVisibility,
                     sharedTransitionScope = this@SharedTransitionLayout,
