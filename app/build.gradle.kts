@@ -1,11 +1,18 @@
 import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.kotlin.compose)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
 configure<ApplicationExtension> {
@@ -21,9 +28,24 @@ configure<ApplicationExtension> {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = localProperties.getProperty("keystore_path")?.let { file(it) }
+            storePassword = localProperties.getProperty("keystore_password")
+            keyAlias = localProperties.getProperty("key_alias")
+            keyPassword = localProperties.getProperty("key_password")
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
