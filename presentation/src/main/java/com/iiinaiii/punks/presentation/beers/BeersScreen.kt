@@ -169,6 +169,7 @@ private fun BeerItem(
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(beer.imageUrl)
+                .placeholder(R.drawable.placeholder_bottle)
                 .crossfade(true)
                 .precision(Precision.EXACT)
                 .build(),

@@ -27,10 +27,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Precision
+import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiModel
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
 
@@ -84,7 +88,12 @@ private fun BeerDetailContent(
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
-                    model = beer.imageUrl,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(beer.imageUrl)
+                        .placeholder(R.drawable.placeholder_bottle)
+                        .crossfade(true)
+                        .precision(Precision.EXACT)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -139,7 +148,14 @@ private fun BeerDetailContent(
                 )
 
                 DetailSection("Basics") {
-                    DetailRow("ABV", beer.abv)
+                    DetailRow(
+                        label = "ABV",
+                        value = beer.abv,
+                        modifier = Modifier.sharedElement(
+                                sharedContentState = rememberSharedContentState(key = "abv-${beer.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                    )
                     DetailRow("IBU", beer.ibu)
                     DetailRow("EBC", beer.ebc)
                 }
@@ -157,8 +173,12 @@ private fun DetailSection(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun DetailRow(label: String, value: String) {
-    Row(modifier = Modifier.padding(top = 8.dp)) {
+private fun DetailRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier.padding(top = 8.dp)) {
         Text(text = "$label: ", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
         Text(text = value, style = MaterialTheme.typography.bodyMedium)
     }
