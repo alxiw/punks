@@ -1,10 +1,12 @@
 package com.iiinaiii.punks.presentation.beers
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,14 +21,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -36,8 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.LoadStates
-import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -48,7 +59,7 @@ import coil.size.Precision
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.beers.model.BeerItemUiModel
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BeersScreen(
     viewModel: BeersViewModel = hiltViewModel(),
@@ -58,23 +69,59 @@ fun BeersScreen(
 ) {
     val beers = viewModel.beersFlow.collectAsLazyPagingItems()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // use beers.loadState.mediator?.refresh with higher priority when use remote mediator
-        when (val refreshState = beers.loadState.refresh) {
-            is LoadState.Loading -> BeersLoading(modifier = Modifier.align(Alignment.Center))
-            is LoadState.Error -> BeersError(
-                message = refreshState.error.localizedMessage ?: "Unknown error",
-                onRetry = { beers.retry() },
-                modifier = Modifier.align(Alignment.Center)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { },
+                actions = {
+                    IconButton(
+                        onClick = { Log.d("HELLO", "ON SEARCH CLICK") },
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                    }
+                    IconButton(
+                        onClick = { Log.d("HELLO", "ON FAVORITES CLICK") },
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favorites")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                )
             )
-            is LoadState.NotLoading -> {
-                if (beers.itemCount == 0) {
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            // use beers.loadState.mediator?.refresh with higher priority when use remote mediator
+            when (val refreshState = beers.loadState.refresh) {
+                is LoadState.Loading -> BeersLoading(modifier = Modifier.align(Alignment.Center))
+                is LoadState.Error -> BeersError(
+                    message = refreshState.error.localizedMessage ?: "Unknown error",
+                    onRetry = { beers.retry() },
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                is LoadState.NotLoading -> if (beers.itemCount == 0) {
                     BeersEmpty(modifier = Modifier.align(Alignment.Center))
                 } else {
                     BeersList(
                         beers = beers,
                         animatedVisibilityScope = animatedVisibilityScope,
                         sharedTransitionScope = sharedTransitionScope,
+                        contentPadding = paddingValues,
                         onBeerClick = onBeerClick
                     )
                 }
@@ -121,10 +168,12 @@ private fun BeersList(
     beers: LazyPagingItems<BeerItemUiModel>,
     animatedVisibilityScope: AnimatedVisibilityScope,
     sharedTransitionScope: SharedTransitionScope,
+    contentPadding: PaddingValues,
     onBeerClick: (Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding
     ) {
         items(
             count = beers.itemCount,

@@ -25,8 +25,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
-    private const val CACHE_MAX_STALE = 60 * 60 * 24 * 7 // 7 days
-    private const val CACHE_MAX_AGE = 60 * 3 // 3 minutes
+    private const val CACHE_MAX_STALE = 60 * 60 * 24 * 14 // 14 days
+    private const val CACHE_MAX_AGE = 60 * 60 * 24 * 1 // 1 day
 
     @Provides
     @Singleton
@@ -81,8 +81,10 @@ object DataModule {
                     "no-store"
                 }
                 response.newBuilder()
-                    .header("Cache-Control", cacheControl)
                     .removeHeader("Pragma")
+                    .removeHeader("Cache-Control")
+                    .removeHeader("Expires")
+                    .header("Cache-Control", cacheControl)
                     .build()
             }
             .build()

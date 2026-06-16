@@ -5,27 +5,35 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +46,7 @@ import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiModel
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BeerDetailScreen(
     viewModel: BeerDetailViewModel = hiltViewModel(),
@@ -48,37 +56,66 @@ fun BeerDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (val state = uiState) {
-            is BeerDetailUiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            is BeerDetailUiState.Success -> {
-                BeerDetailContent(
-                    beer = state.model,
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    sharedTransitionScope = sharedTransitionScope,
-                    onBackClick = onBackClick
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
                 )
-            }
-            is BeerDetailUiState.Error -> {
-                Text(
-                    text = state.exception.message ?: "Error",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.error
-                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (val state = uiState) {
+                is BeerDetailUiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                is BeerDetailUiState.Success -> {
+                    BeerDetailContent(
+                        beer = state.model,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        sharedTransitionScope = sharedTransitionScope,
+                        paddingValues = paddingValues
+                    )
+                }
+                is BeerDetailUiState.Error -> {
+                    Text(
+                        text = state.exception.message ?: "Unknown error",
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun BeerDetailContent(
     beer: BeerDetailUiModel,
     animatedVisibilityScope: AnimatedVisibilityScope,
     sharedTransitionScope: SharedTransitionScope,
-    onBackClick: () -> Unit
+    paddingValues: PaddingValues
 ) {
     with(sharedTransitionScope) {
         Column(
@@ -86,7 +123,11 @@ private fun BeerDetailContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = paddingValues.calculateTopPadding())
+            ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(beer.imageUrl)
@@ -104,12 +145,6 @@ private fun BeerDetailContent(
                         ),
                     contentScale = ContentScale.Fit
                 )
-                IconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
@@ -152,9 +187,9 @@ private fun BeerDetailContent(
                         label = "ABV",
                         value = beer.abv,
                         modifier = Modifier.sharedElement(
-                                sharedContentState = rememberSharedContentState(key = "abv-${beer.id}"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
+                            sharedContentState = rememberSharedContentState(key = "abv-${beer.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
                     )
                     DetailRow("IBU", beer.ibu)
                     DetailRow("EBC", beer.ebc)
@@ -216,7 +251,7 @@ private fun BeerDetailContentPreview() {
                     beer = sampleBeer,
                     animatedVisibilityScope = this,
                     sharedTransitionScope = this@SharedTransitionLayout,
-                    onBackClick = {}
+                    paddingValues = PaddingValues.Zero
                 )
             }
         }
