@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -123,10 +124,11 @@ private fun BeerDetailContent(
     paddingValues: PaddingValues
 ) {
     with(sharedTransitionScope) {
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
         ) {
             // top section
             Box(
@@ -273,6 +275,10 @@ private fun BeerDetailContent(
                     )
                 }
             }
+
+            Spacer(
+                modifier = Modifier.height(paddingValues.calculateBottomPadding())
+            )
         }
     }
 }

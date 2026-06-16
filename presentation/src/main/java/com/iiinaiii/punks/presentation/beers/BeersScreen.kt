@@ -175,6 +175,7 @@ private fun BeersList(
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding
     ) {
+        item { HorizontalDivider() }
         items(
             count = beers.itemCount,
             key = beers.itemKey { it.id },
