@@ -254,53 +254,32 @@ private fun BeerItem(
                 .weight(1f)
                 .padding(vertical = 4.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = beer.name,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .sharedElementIfNotPreview(
-                                sharedTransitionScope = sharedTransitionScope,
-                                key = "name-${beer.id}",
-                                animatedVisibilityScope = animatedVisibilityScope
-                            ),
+            Text(
+                text = beer.name,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .sharedElementIfNotPreview(
+                        sharedTransitionScope = sharedTransitionScope,
+                        key = "name-${beer.id}",
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
+            )
+            Text(
+                text = beer.tagline,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .sharedElementIfNotPreview(
+                        sharedTransitionScope = sharedTransitionScope,
+                        key = "tagline-${beer.id}",
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
-                    Text(
-                        text = beer.tagline,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .sharedElementIfNotPreview(
-                                sharedTransitionScope = sharedTransitionScope,
-                                key = "tagline-${beer.id}",
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                    )
-                }
+            )
 
-                IconButton(
-                    onClick = onFavoriteClick,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(40.dp)
-                ) {
-                    Icon(
-                        painter = if (isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
-                        contentDescription = null,
-                        tint = if (isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.weight(1f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -329,12 +308,33 @@ private fun BeerItem(
                         ),
                     style = MaterialTheme.typography.bodyMedium
                 )
+            }
+        }
 
-                Text(
-                    text = "#${beer.id}",
-                    style = MaterialTheme.typography.bodyMedium,
+        Column(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .padding(start = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            IconButton(
+                onClick = onFavoriteClick,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    painter = if (isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
+                    contentDescription = null,
+                    tint = if (isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(32.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "#${beer.id}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
     }
 }
