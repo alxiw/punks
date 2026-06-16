@@ -2,11 +2,13 @@ package com.iiinaiii.punks.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.iiinaiii.punks.data.remote.api.model.toBeer
+import com.iiinaiii.punks.data.local.BeersLocalDataSource
+import com.iiinaiii.punks.data.remote.model.toBeer
 import com.iiinaiii.punks.domain.model.Beer
 
 internal class BeerPagingSource(
-    private val remoteDataSource: BeersRemoteDataSource
+    private val remoteDataSource: BeersRemoteDataSource,
+    private val localDataSource: BeersLocalDataSource
 ) : PagingSource<Int, Beer>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Beer> {
@@ -14,7 +16,10 @@ internal class BeerPagingSource(
 
         return remoteDataSource.getBeers(page).fold(
             onSuccess = { data ->
-                val beers = data.map { it.toBeer() }
+                val favorites = localDataSource.getFavoriteIds()
+                val beers = data.map { 
+                    it.toBeer().copy(isFavorite = favorites.contains(it.id))
+                }
                 LoadResult.Page(
                     data = beers,
                     prevKey = if (page == 1) null else page - 1,

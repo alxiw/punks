@@ -2,6 +2,9 @@ package com.iiinaiii.punks.data.di
 
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
+import com.iiinaiii.punks.data.local.db.PunksDatabase
+import com.iiinaiii.punks.data.local.dao.FavoriteDao
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.data.remote.NetworkHandler
 import com.iiinaiii.punks.data.remote.util.CacheUtil
@@ -27,6 +30,7 @@ object DataModule {
 
     private const val CACHE_MAX_STALE = 60 * 60 * 24 * 14 // 14 days
     private const val CACHE_MAX_AGE = 60 * 60 * 24 * 1 // 1 day
+    private const val DB_NAME = "punks.db"
 
     @Provides
     @Singleton
@@ -99,5 +103,21 @@ object DataModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(BeersSearchService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideDatabase(@ApplicationContext context: Context): PunksDatabase {
+        return Room.databaseBuilder(
+            context,
+            PunksDatabase::class.java,
+            DB_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideFavoriteBeerDao(database: PunksDatabase): FavoriteDao {
+        return database.favoriteBeerDao()
     }
 }

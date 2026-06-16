@@ -19,5 +19,6 @@ data class Beer(
     val attenuationLevel: String,
     val foodPairing: List<String>,
     val brewersTips: String,
-    val contributedBy: String
+    val contributedBy: String,
+    val isFavorite: Boolean = false
 )

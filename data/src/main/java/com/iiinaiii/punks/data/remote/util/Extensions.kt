@@ -1,6 +1,6 @@
 package com.iiinaiii.punks.data.remote.util
 
-import com.iiinaiii.punks.data.remote.api.model.VolumeResponse
+import com.iiinaiii.punks.data.remote.model.VolumeResponse
 
 internal fun VolumeResponse.toVolumeText(): String {
     return value.toString() + ValueUnit.convertToDisplayName(unit)

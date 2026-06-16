@@ -19,5 +19,5 @@ internal fun Beer.toItemUiModel() = BeerItemUiModel(
     imageUrl = imageUrl,
     firstBrewed = firstBrewed,
     abv = abv,
-    isFavorite = false
+    isFavorite = isFavorite
 )

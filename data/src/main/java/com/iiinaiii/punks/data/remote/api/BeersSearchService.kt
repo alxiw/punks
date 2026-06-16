@@ -1,7 +1,7 @@
 package com.iiinaiii.punks.data.remote.api
 
 import android.net.Uri
-import com.iiinaiii.punks.data.remote.api.model.BeerResponse
+import com.iiinaiii.punks.data.remote.model.BeerResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

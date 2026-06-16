@@ -37,6 +37,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,6 +71,7 @@ fun BeersScreen(
     onBeerClick: (Int) -> Unit,
 ) {
     val beers = viewModel.beersFlow.collectAsLazyPagingItems()
+    val favoriteIds by viewModel.favoriteIds.collectAsState()
 
     Scaffold(
         topBar = {
@@ -120,10 +123,12 @@ fun BeersScreen(
                 } else {
                     BeersList(
                         beers = beers,
+                        favoriteIds = favoriteIds,
                         animatedVisibilityScope = animatedVisibilityScope,
                         sharedTransitionScope = sharedTransitionScope,
                         contentPadding = paddingValues,
-                        onBeerClick = onBeerClick
+                        onBeerClick = onBeerClick,
+                        onFavoriteClick = viewModel::onFavoriteClick
                     )
                 }
             }
@@ -167,10 +172,12 @@ private fun BeersError(
 @Composable
 private fun BeersList(
     beers: LazyPagingItems<BeerItemUiModel>,
+    favoriteIds: Set<Int>,
     animatedVisibilityScope: AnimatedVisibilityScope,
     sharedTransitionScope: SharedTransitionScope,
     contentPadding: PaddingValues,
     onBeerClick: (Int) -> Unit,
+    onFavoriteClick: (Int) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -183,10 +190,13 @@ private fun BeersList(
             contentType = beers.itemContentType { "beer" }
         ) { index ->
             beers[index]?.let { beer ->
+                val isFavorite = favoriteIds.contains(beer.id)
                 BeerItem(
                     beer = beer,
+                    isFavorite = isFavorite,
                     animatedVisibilityScope = animatedVisibilityScope,
                     sharedTransitionScope = sharedTransitionScope,
+                    onFavoriteClick = { onFavoriteClick(beer.id) },
                     onClick = { onBeerClick(beer.id) }
                 )
                 HorizontalDivider()
@@ -205,8 +215,10 @@ private fun BeersList(
 @Composable
 private fun BeerItem(
     beer: BeerItemUiModel,
+    isFavorite: Boolean,
     animatedVisibilityScope: AnimatedVisibilityScope,
     sharedTransitionScope: SharedTransitionScope,
+    onFavoriteClick: () -> Unit,
     onClick: () -> Unit
 ) {
     Row(
@@ -244,7 +256,7 @@ private fun BeerItem(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier.weight(1f)
@@ -275,14 +287,19 @@ private fun BeerItem(
                     )
                 }
 
-                Icon(
-                    painter = if (beer.isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
-                    contentDescription = null,
-                    tint = if (beer.isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
+                IconButton(
+                    onClick = onFavoriteClick,
                     modifier = Modifier
-                        .padding(top = 6.dp, start = 8.dp)
-                        .size(42.dp)
-                )
+                        .padding(start = 8.dp)
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        painter = if (isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
+                        contentDescription = null,
+                        tint = if (isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             }
 
             Row(
@@ -453,8 +470,10 @@ private fun BeerItemPreview() {
                         abv = "4.5%",
                         isFavorite = true
                     ),
+                    isFavorite = true,
                     animatedVisibilityScope = this@AnimatedVisibility,
                     sharedTransitionScope = this@SharedTransitionLayout,
+                    onFavoriteClick = {},
                     onClick = {}
                 )
             }

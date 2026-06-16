@@ -1,4 +1,4 @@
-package com.iiinaiii.punks.data.remote.api.model
+package com.iiinaiii.punks.data.remote.model
 
 import com.iiinaiii.punks.data.remote.util.toDateOrDefault
 import com.iiinaiii.punks.data.remote.util.toStringOrDefault

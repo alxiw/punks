@@ -20,7 +20,8 @@ internal data class BeerDetailUiModel(
     val ph: String,
     val attenuationLevel: String,
     val foodPairing: List<String>,
-    val brewersTips: String
+    val brewersTips: String,
+    val isFavorite: Boolean = false
 )
 
 internal fun Beer.toDetailUiModel() = BeerDetailUiModel(
@@ -41,5 +42,6 @@ internal fun Beer.toDetailUiModel() = BeerDetailUiModel(
     ph = ph,
     attenuationLevel = attenuationLevel,
     foodPairing = foodPairing,
-    brewersTips = brewersTips
+    brewersTips = brewersTips,
+    isFavorite = isFavorite
 )
