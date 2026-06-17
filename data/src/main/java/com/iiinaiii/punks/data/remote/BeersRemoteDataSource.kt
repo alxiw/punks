@@ -22,6 +22,19 @@ internal class BeersRemoteDataSource @Inject constructor(
         onFailure = { Result.failure(IOException("Network error while getting beers data by page $page", it)) }
     )
 
+    suspend fun getBeersByIds(
+        ids: List<Int>,
+        page: Int
+    ): Result<List<BeerResponse>> = runCatching {
+        val idsString = ids.joinToString(",")
+        val response = service.getBeersByIds(idsString, page)
+        response.body()?.takeIf { response.isSuccessful }
+            ?: throw IOException("Error ${response.code()} ${response.message()}")
+    }.fold(
+        onSuccess = { Result.success(it) },
+        onFailure = { Result.failure(IOException("Network error while getting beers data by ids $ids and page $page", it)) }
+    )
+
     suspend fun getBeer(
         id: Int
     ): Result<BeerResponse> = runCatching {

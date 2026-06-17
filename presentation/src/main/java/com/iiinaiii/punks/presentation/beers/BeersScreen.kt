@@ -69,6 +69,7 @@ fun BeersScreen(
     animatedVisibilityScope: AnimatedVisibilityScope,
     sharedTransitionScope: SharedTransitionScope,
     onBeerClick: (Int) -> Unit,
+    onFavoritesClick: () -> Unit,
 ) {
     val beers = viewModel.beersFlow.collectAsLazyPagingItems()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
@@ -90,7 +91,7 @@ fun BeersScreen(
                         Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
                     }
                     IconButton(
-                        onClick = { Log.d("HELLO", "ON FAVORITES CLICK") },
+                        onClick = onFavoritesClick,
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .background(
@@ -137,12 +138,12 @@ fun BeersScreen(
 }
 
 @Composable
-private fun BeersLoading(modifier: Modifier = Modifier) {
+internal fun BeersLoading(modifier: Modifier = Modifier) {
     CircularProgressIndicator(modifier = modifier)
 }
 
 @Composable
-private fun BeersEmpty(modifier: Modifier = Modifier) {
+internal fun BeersEmpty(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(R.string.empty),
         modifier = modifier,
@@ -151,7 +152,7 @@ private fun BeersEmpty(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BeersError(
+internal fun BeersError(
     message: String,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -162,9 +163,7 @@ private fun BeersError(
     ) {
         Text(text = message, color = MaterialTheme.colorScheme.error)
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = onRetry) {
-            Text(text = "Retry")
-        }
+        Button(onClick = onRetry) { stringResource(R.string.retry) }
     }
 }
 
@@ -213,7 +212,7 @@ private fun BeersList(
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun BeerItem(
+internal fun BeerItem(
     beer: BeerItemUiModel,
     isFavorite: Boolean,
     animatedVisibilityScope: AnimatedVisibilityScope,
@@ -340,7 +339,7 @@ private fun BeerItem(
 }
 
 @Composable
-private fun LoadingItem() {
+internal fun LoadingItem() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -353,7 +352,7 @@ private fun LoadingItem() {
 }
 
 @Composable
-private fun ErrorItem(
+internal fun ErrorItem(
     error: Throwable,
     onClick: () -> Unit
 ) {
@@ -392,7 +391,7 @@ private fun ErrorItem(
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun Modifier.sharedElementIfNotPreview(
+internal fun Modifier.sharedElementIfNotPreview(
     sharedTransitionScope: SharedTransitionScope,
     key: Any,
     animatedVisibilityScope: AnimatedVisibilityScope

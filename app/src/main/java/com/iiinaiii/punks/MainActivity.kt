@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.iiinaiii.punks.presentation.beers.BeersScreen
 import com.iiinaiii.punks.presentation.detail.BeerDetailScreen
+import com.iiinaiii.punks.presentation.favorites.FavoritesScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,7 +44,16 @@ class MainActivity : ComponentActivity() {
                                 BeersScreen(
                                     animatedVisibilityScope = this@composable,
                                     sharedTransitionScope = this@SharedTransitionLayout,
-                                    onBeerClick = { beerId -> navController.navigate("detail/$beerId") }
+                                    onBeerClick = { beerId -> navController.navigate("detail/$beerId") },
+                                    onFavoritesClick = { navController.navigate("favorites") }
+                                )
+                            }
+                            composable("favorites") {
+                                FavoritesScreen(
+                                    animatedVisibilityScope = this@composable,
+                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                    onBeerClick = { beerId -> navController.navigate("detail/$beerId") },
+                                    onBackClick = { navController.popBackStack() }
                                 )
                             }
                             composable(

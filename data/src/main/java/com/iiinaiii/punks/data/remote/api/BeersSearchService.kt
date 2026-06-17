@@ -14,6 +14,12 @@ internal interface BeersSearchService {
         @Query("page") page: Int
     ): Response<List<BeerResponse>>
 
+    @GET("beers")
+    suspend fun getBeersByIds(
+        @Query("ids", encoded = true) ids: String,
+        @Query("page") page: Int
+    ): Response<List<BeerResponse>>
+
     @GET("beers/{id}")
     suspend fun getBeer(
         @Path("id") id: Int

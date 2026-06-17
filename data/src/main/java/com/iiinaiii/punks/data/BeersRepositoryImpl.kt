@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.iiinaiii.punks.data.local.BeersLocalDataSource
 import com.iiinaiii.punks.data.remote.BeerPagingSource
 import com.iiinaiii.punks.data.remote.BeersRemoteDataSource
+import com.iiinaiii.punks.data.remote.FavoritePagingSource
 import com.iiinaiii.punks.data.remote.model.toBeer
 import com.iiinaiii.punks.domain.BeersRepository
 import com.iiinaiii.punks.domain.model.Beer
@@ -26,6 +27,14 @@ internal class BeersRepositoryImpl @Inject constructor(
             enablePlaceholders = false
         ),
         pagingSourceFactory = { BeerPagingSource(remoteDataSource, localDataSource) }
+    ).flow
+
+    override fun getFavoriteBeersFlow(): Flow<PagingData<Beer>> = Pager(
+        config = PagingConfig(
+            pageSize = 30,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { FavoritePagingSource(remoteDataSource, localDataSource) }
     ).flow
 
     override fun getFavoriteIdsFlow(): Flow<Set<Int>> = localDataSource.getFavoriteIdsFlow()
