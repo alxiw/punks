@@ -96,14 +96,16 @@ fun BeersScreen(
         mutableStateOf(TextFieldValue(viewModel.initialQuery))
     }
     val focusRequester = remember { FocusRequester() }
+    var shouldRequestFocus by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchQuery) {
         viewModel.accept(searchQuery.text)
     }
 
-    LaunchedEffect(isSearchActive) {
-        if (isSearchActive) {
+    LaunchedEffect(shouldRequestFocus) {
+        if (shouldRequestFocus) {
             focusRequester.requestFocus()
+            shouldRequestFocus = false
         }
     }
 
@@ -135,7 +137,10 @@ fun BeersScreen(
                             exit = fadeOut()
                         ) {
                             IconButton(
-                                onClick = { isSearchActive = true },
+                                onClick = {
+                                    isSearchActive = true
+                                    shouldRequestFocus = true
+                                },
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
