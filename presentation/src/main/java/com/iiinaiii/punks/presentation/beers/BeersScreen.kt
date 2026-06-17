@@ -63,6 +63,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -91,7 +92,9 @@ fun BeersScreen(
     val favoriteIds by viewModel.favoriteIds.collectAsState()
 
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
-    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var searchQuery by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(isSearchActive) {
@@ -157,7 +160,7 @@ fun BeersScreen(
                         onQueryChange = { searchQuery = it },
                         onCloseClick = {
                             isSearchActive = false
-                            searchQuery = ""
+                            searchQuery = TextFieldValue("")
                         },
                         focusRequester = focusRequester
                     )
@@ -195,8 +198,8 @@ fun BeersScreen(
 
 @Composable
 internal fun BeersSearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
+    query: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
     onCloseClick: () -> Unit,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier
@@ -236,7 +239,7 @@ internal fun BeersSearchBar(
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
-                    if (query.isEmpty()) {
+                    if (query.text.isEmpty()) {
                         Text(
                             text = stringResource(R.string.search_hint),
                             style = MaterialTheme.typography.bodyLarge,
@@ -605,7 +608,7 @@ private fun BeerItemPreview() {
 private fun BeersSearchBarPreview() {
     MaterialTheme {
         BeersSearchBar(
-            query = "My name is",
+            query = TextFieldValue("My name is"),
             onQueryChange = {},
             onCloseClick = {},
             focusRequester = remember { FocusRequester() }
