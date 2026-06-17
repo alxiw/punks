@@ -21,11 +21,5 @@
     <string name="header_basics">BASICS</string>
     <string name="header_food_pairing">FOOD PAIRING</string>
     <string name="header_brewers_tips">BREWER\'S TIPS</string>
-    <string name="beer_detail_error">Error while receiving beer data: %s</string>
-
-    <!-- Transition name -->
-    <string name="transition_beer_image">beer_image</string>
-    <string name="transition_beer_name">beer_name</string>
-    <string name="transition_beer_abv">beer_abv</string>
-    <string name="transition_beer_date">beer_date</string>
+    <string name="header_contributed_by">CONTRIBUTED BY</string>
 </resources>

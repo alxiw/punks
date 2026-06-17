@@ -21,6 +21,7 @@ internal data class BeerDetailUiModel(
     val attenuationLevel: String,
     val foodPairing: List<String>,
     val brewersTips: String,
+    val contributedBy: String,
     val isFavorite: Boolean = false
 )
 
@@ -43,5 +44,6 @@ internal fun Beer.toDetailUiModel() = BeerDetailUiModel(
     attenuationLevel = attenuationLevel,
     foodPairing = foodPairing,
     brewersTips = brewersTips,
+    contributedBy = contributedBy,
     isFavorite = isFavorite
 )

@@ -299,6 +299,15 @@ private fun BeerDetailContent(
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
                     )
                 }
+
+                // contributed by
+                DetailSection(stringResource(R.string.header_contributed_by)) {
+                    Text(
+                        text = beer.contributedBy,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                    )
+                }
             }
 
             Spacer(
@@ -388,7 +397,8 @@ private fun BeerDetailContentPreview() {
         ph = "4.4",
         attenuationLevel = "82.1",
         foodPairing = listOf("Spicy thai curry", "Grilled steak", "Cheesecake"),
-        brewersTips = "While the boil is vigorous, ensure you keep a close eye on the temperature."
+        brewersTips = "While the boil is vigorous, ensure you keep a close eye on the temperature.",
+        contributedBy = "Alexander Ivanovsky <alxiw>"
     )
 
     SharedTransitionLayout {
