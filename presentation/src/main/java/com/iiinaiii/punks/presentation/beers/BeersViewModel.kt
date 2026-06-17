@@ -14,10 +14,12 @@ import com.iiinaiii.punks.presentation.beers.model.toItemUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class BeersViewModel @Inject constructor(
@@ -38,9 +41,11 @@ class BeersViewModel @Inject constructor(
 
     private val actionStateFlow = MutableSharedFlow<String>()
 
+    @OptIn(FlowPreview::class)
     private val searches = actionStateFlow
-        .distinctUntilChanged()
         .onStart { emit(initialQuery) }
+        .distinctUntilChanged()
+        .debounce(300.milliseconds)
 
     private val state: StateFlow<String> = searches
         .stateIn(
