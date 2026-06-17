@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetBeersFlowUseCase @Inject constructor(
     private val beersRepository: BeersRepository
 ) {
-    operator fun invoke(): Flow<PagingData<Beer>> {
-        return beersRepository.getBeersFlow()
+    operator fun invoke(query: String?): Flow<PagingData<Beer>> {
+        return beersRepository.getBeersFlow(query)
     }
 }

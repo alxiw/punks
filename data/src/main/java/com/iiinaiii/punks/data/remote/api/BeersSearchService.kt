@@ -11,6 +11,7 @@ internal interface BeersSearchService {
 
     @GET("beers")
     suspend fun getBeers(
+        @Query("beer_name") beerName: String?,
         @Query("page") page: Int
     ): Response<List<BeerResponse>>
 

@@ -7,6 +7,7 @@ import com.iiinaiii.punks.data.remote.model.toBeer
 import com.iiinaiii.punks.domain.model.Beer
 
 internal class BeerPagingSource(
+    private val query: String?,
     private val remoteDataSource: BeersRemoteDataSource,
     private val localDataSource: BeersLocalDataSource
 ) : PagingSource<Int, Beer>() {
@@ -14,7 +15,7 @@ internal class BeerPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Beer> {
         val page = params.key ?: 1
 
-        return remoteDataSource.getBeers(page).fold(
+        return remoteDataSource.getBeers(query, page).fold(
             onSuccess = { data ->
                 val favorites = localDataSource.getFavoriteIds()
                 val beers = data.map { 

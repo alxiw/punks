@@ -28,7 +28,7 @@ class BeersViewModel @Inject constructor(
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
-    internal val beersFlow: Flow<PagingData<BeerItemUiModel>> = getBeersFlowUseCase()
+    internal val beersFlow: Flow<PagingData<BeerItemUiModel>> = getBeersFlowUseCase(null)
         .map { pagingData ->
             pagingData.map { beer -> beer.toItemUiModel() }
         }

@@ -21,17 +21,17 @@ internal class BeersRepositoryImpl @Inject constructor(
     private val localDataSource: BeersLocalDataSource
 ) : BeersRepository {
 
-    override fun getBeersFlow(): Flow<PagingData<Beer>> = Pager(
+    override fun getBeersFlow(query: String?): Flow<PagingData<Beer>> = Pager(
         config = PagingConfig(
-            pageSize = 30,
+            pageSize = PAGE_SIZE,
             enablePlaceholders = false
         ),
-        pagingSourceFactory = { BeerPagingSource(remoteDataSource, localDataSource) }
+        pagingSourceFactory = { BeerPagingSource(query, remoteDataSource, localDataSource) }
     ).flow
 
     override fun getFavoriteBeersFlow(): Flow<PagingData<Beer>> = Pager(
         config = PagingConfig(
-            pageSize = 30,
+            pageSize = PAGE_SIZE,
             enablePlaceholders = false
         ),
         pagingSourceFactory = { FavoritePagingSource(remoteDataSource, localDataSource) }
@@ -50,5 +50,9 @@ internal class BeersRepositoryImpl @Inject constructor(
         } else {
             localDataSource.addFavorite(id)
         }
+    }
+
+    companion object {
+        private const val PAGE_SIZE = 30
     }
 }

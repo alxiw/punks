@@ -12,9 +12,11 @@ internal class BeersRemoteDataSource @Inject constructor(
 ) {
 
     suspend fun getBeers(
+        query: String?,
         page: Int
     ): Result<List<BeerResponse>> = runCatching {
-        val response = service.getBeers(page)
+        val beerName = if (query.isNullOrEmpty()) null else query.replace(' ', '_')
+        val response = service.getBeers(beerName, page)
         response.body()?.takeIf { response.isSuccessful }
             ?: throw IOException("Error ${response.code()} ${response.message()}")
     }.fold(
