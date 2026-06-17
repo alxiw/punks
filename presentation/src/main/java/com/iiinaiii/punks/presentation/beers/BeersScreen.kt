@@ -91,11 +91,15 @@ fun BeersScreen(
     val beers = viewModel.beersFlow.collectAsLazyPagingItems()
     val favoriteIds by viewModel.favoriteIds.collectAsState()
 
-    var isSearchActive by rememberSaveable { mutableStateOf(false) }
+    var isSearchActive by rememberSaveable { mutableStateOf(viewModel.initialQuery.isNotEmpty()) }
     var searchQuery by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(viewModel.initialQuery))
     }
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(searchQuery) {
+        viewModel.accept(searchQuery.text)
+    }
 
     LaunchedEffect(isSearchActive) {
         if (isSearchActive) {
@@ -161,6 +165,7 @@ fun BeersScreen(
                         onCloseClick = {
                             isSearchActive = false
                             searchQuery = TextFieldValue("")
+                            viewModel.accept("")
                         },
                         focusRequester = focusRequester
                     )

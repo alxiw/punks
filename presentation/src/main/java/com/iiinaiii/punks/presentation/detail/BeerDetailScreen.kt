@@ -89,7 +89,7 @@ fun BeerDetailScreen(
                     IconButton(
                         onClick = viewModel::onFavoriteClick,
                         modifier = Modifier
-                            .padding(end = 16.dp)
+                            .padding(end = 8.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                 shape = CircleShape

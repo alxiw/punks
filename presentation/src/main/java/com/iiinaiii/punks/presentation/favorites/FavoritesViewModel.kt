@@ -32,7 +32,6 @@ class FavoritesViewModel @Inject constructor(
         .map { pagingData ->
             pagingData.map { beer -> beer.toItemUiModel() }
         }
-        .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)
 
     internal val favoriteIds: StateFlow<Set<Int>> = getFavoriteIdsFlowUseCase()
