@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,7 +100,7 @@ fun BeersScreen(
                                 shape = CircleShape
                             )
                     ) {
-                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorites")
+                        Icon(imageVector = Icons.Outlined.Favorite, contentDescription = "Favorites")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -323,7 +324,7 @@ internal fun BeerItem(
                 Icon(
                     painter = if (isFavorite) painterResource(id = R.drawable.ic_heart_filled) else painterResource(id = R.drawable.ic_heart_outline),
                     contentDescription = null,
-                    tint = if (isFavorite) Color(0xFFE57373) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (isFavorite) colorResource(R.color.favorite) else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(32.dp)
                 )
             }

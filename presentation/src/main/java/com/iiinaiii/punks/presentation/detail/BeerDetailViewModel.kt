@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iiinaiii.punks.domain.GetBeerUseCase
+import com.iiinaiii.punks.domain.ToggleFavoriteUseCase
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
 import com.iiinaiii.punks.presentation.detail.model.toDetailUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,22 +12,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BeerDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getBeer: GetBeerUseCase
+    private val getBeer: GetBeerUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<BeerDetailUiState>(BeerDetailUiState.Loading)
     internal val uiState: StateFlow<BeerDetailUiState> = _uiState.asStateFlow()
 
+    private var beerId: Int = requireNotNull(savedStateHandle["beerId"]) {
+        "BeerDetailViewModel requires beerId in SavedStateHandle"
+    }
+
     init {
-        val beerId: Int = requireNotNull(savedStateHandle["beerId"]) {
-            "BeerDetailViewModel requires beerId in SavedStateHandle"
-        }
         loadBeer(beerId)
     }
 
@@ -36,6 +40,22 @@ class BeerDetailViewModel @Inject constructor(
                 onSuccess = { BeerDetailUiState.Success(it.toDetailUiModel()) },
                 onFailure = { BeerDetailUiState.Error(it) }
             )
+        }
+    }
+
+    fun onFavoriteClick() {
+        val currentState = _uiState.value
+        if (currentState is BeerDetailUiState.Success) {
+            val newFavoriteStatus = !currentState.model.isFavorite
+            _uiState.update {
+                if (it is BeerDetailUiState.Success) {
+                    it.copy(model = it.model.copy(isFavorite = newFavoriteStatus))
+                } else it
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                toggleFavoriteUseCase(beerId)
+            }
         }
     }
 }
