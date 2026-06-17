@@ -1,5 +1,6 @@
 package com.iiinaiii.punks.presentation.beers
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.expandHorizontally
@@ -97,6 +98,12 @@ fun BeersScreen(
     }
     val focusRequester = remember { FocusRequester() }
     var shouldRequestFocus by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = isSearchActive) {
+        isSearchActive = false
+        searchQuery = TextFieldValue("")
+        viewModel.accept("")
+    }
 
     LaunchedEffect(searchQuery) {
         viewModel.accept(searchQuery.text)
