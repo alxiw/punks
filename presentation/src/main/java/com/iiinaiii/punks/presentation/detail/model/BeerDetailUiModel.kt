@@ -1,6 +1,12 @@
 package com.iiinaiii.punks.presentation.detail.model
 
 import com.iiinaiii.punks.domain.model.Beer
+import com.iiinaiii.punks.domain.model.Fermentation
+import com.iiinaiii.punks.domain.model.Hop
+import com.iiinaiii.punks.domain.model.Ingredients
+import com.iiinaiii.punks.domain.model.Malt
+import com.iiinaiii.punks.domain.model.MashTemp
+import com.iiinaiii.punks.domain.model.Method
 
 internal data class BeerDetailUiModel(
     val id: Int,
@@ -15,14 +21,49 @@ internal data class BeerDetailUiModel(
     val targetFg: String,
     val ebc: String,
     val srm: String,
-    val volume: String,
-    val boilVolume: String,
     val ph: String,
     val attenuationLevel: String,
+    val volume: String,
+    val boilVolume: String,
+    val method: MethodUiModel,
+    val ingredients: IngredientsUiModel,
     val foodPairing: List<String>,
     val brewersTips: String,
     val contributedBy: String,
     val isFavorite: Boolean = false
+)
+
+internal data class MethodUiModel(
+    val mashTemp: List<MashTempUiModel>,
+    val fermentation: FermentationUiModel,
+    val twist: List<String>
+)
+
+internal data class MashTempUiModel(
+    val temp: String,
+    val duration: String?
+)
+
+internal data class FermentationUiModel(
+    val temp: String
+)
+
+internal data class IngredientsUiModel(
+    val malt: List<MaltUiModel>,
+    val hops: List<HopUiModel>,
+    val yeast: String?
+)
+
+internal data class MaltUiModel(
+    val name: String,
+    val amount: String
+)
+
+internal data class HopUiModel(
+    val name: String,
+    val amount: String,
+    val add: String,
+    val attribute: String?
 )
 
 internal fun Beer.toDetailUiModel() = BeerDetailUiModel(
@@ -38,12 +79,47 @@ internal fun Beer.toDetailUiModel() = BeerDetailUiModel(
     targetFg = targetFg,
     ebc = ebc,
     srm = srm,
-    volume = volume,
-    boilVolume = boilVolume,
     ph = ph,
     attenuationLevel = attenuationLevel,
+    volume = volume,
+    boilVolume = boilVolume,
+    method = method.toUiModel(),
+    ingredients = ingredients.toUiModel(),
     foodPairing = foodPairing,
     brewersTips = brewersTips,
     contributedBy = contributedBy,
     isFavorite = isFavorite
+)
+
+private fun Method.toUiModel() = MethodUiModel(
+    mashTemp = mashTemp.map { it.toUiModel() },
+    fermentation = fermentation.toUiModel(),
+    twist = twist
+)
+
+private fun MashTemp.toUiModel() = MashTempUiModel(
+    temp = temp,
+    duration = duration
+)
+
+private fun Fermentation.toUiModel() = FermentationUiModel(
+    temp = temp
+)
+
+private fun Ingredients.toUiModel() = IngredientsUiModel(
+    malt = malt.map { it.toUiModel() },
+    hops = hops.map { it.toUiModel() },
+    yeast = yeast
+)
+
+private fun Malt.toUiModel() = MaltUiModel(
+    name = name,
+    amount = amount
+)
+
+private fun Hop.toUiModel() = HopUiModel(
+    name = name,
+    amount = amount,
+    add = add,
+    attribute = attribute
 )

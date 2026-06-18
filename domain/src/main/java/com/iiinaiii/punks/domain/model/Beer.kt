@@ -28,12 +28,12 @@ data class Beer(
 data class Method(
     val mashTemp: List<MashTemp>,
     val fermentation: Fermentation,
-    val twist: String?
+    val twist: List<String>
 )
 
 data class MashTemp(
     val temp: String,
-    val duration: String
+    val duration: String?
 )
 
 data class Fermentation(
@@ -43,7 +43,7 @@ data class Fermentation(
 data class Ingredients(
     val malt: List<Malt>,
     val hops: List<Hop>,
-    val yeast: String
+    val yeast: String?
 )
 
 data class Malt(
@@ -55,5 +55,5 @@ data class Hop(
     val name: String,
     val amount: String,
     val add: String,
-    val attribute: String
+    val attribute: String?
 )

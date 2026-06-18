@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +44,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,13 @@ import coil.size.Precision
 import com.iiinaiii.punks.presentation.R
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiModel
 import com.iiinaiii.punks.presentation.detail.model.BeerDetailUiState
+import com.iiinaiii.punks.presentation.detail.model.FermentationUiModel
+import com.iiinaiii.punks.presentation.detail.model.HopUiModel
+import com.iiinaiii.punks.presentation.detail.model.IngredientsUiModel
+import com.iiinaiii.punks.presentation.detail.model.MaltUiModel
+import com.iiinaiii.punks.presentation.detail.model.MashTempUiModel
+import com.iiinaiii.punks.presentation.detail.model.MethodUiModel
+import kotlin.collections.forEach
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +127,9 @@ fun BeerDetailScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when (val state = uiState) {
                 is BeerDetailUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    BeersDetailLoading(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
                 is BeerDetailUiState.Success -> {
                     BeerDetailContent(
@@ -129,13 +140,45 @@ fun BeerDetailScreen(
                     )
                 }
                 is BeerDetailUiState.Error -> {
-                    Text(
-                        text = state.exception.message ?: "Unknown error",
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.error
+                    BeerDetailError(
+                        message = state.exception.message,
+                        onRetry = { viewModel.retry() },
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+internal fun BeersDetailLoading(
+    modifier: Modifier = Modifier
+) {
+    CircularProgressIndicator(modifier = modifier)
+}
+
+@Composable
+internal fun BeerDetailError(
+    message: String?,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = message ?: "Unknown error",
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onRetry) {
+            Text(
+                text = stringResource(R.string.retry),
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }
@@ -197,28 +240,35 @@ private fun BeerDetailContent(
                             .padding(bottom = 8.dp, start = 4.dp),
                         verticalArrangement = Arrangement.Bottom
                     ) {
-                        Text(
-                            text = beer.firstBrewed,
-                            style = MaterialTheme.typography.titleSmall,
+                        Column(
                             modifier = Modifier
                                 .sharedElement(
                                     sharedContentState = rememberSharedContentState(key = "date-${beer.id}"),
                                     animatedVisibilityScope = animatedVisibilityScope
                                 )
                                 .padding(bottom = 8.dp)
-                        )
+                        ) {
+                            Text(
+                                text = stringResource(R.string.first_brewed),
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                text = beer.firstBrewed,
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        }
 
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp)
-                        ) {
-                            StatItem(
-                                title = stringResource(R.string.abv),
-                                value = beer.abv,
-                                modifier = Modifier.sharedElement(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                                .sharedElement(
                                     sharedContentState = rememberSharedContentState(key = "abv-${beer.id}"),
                                     animatedVisibilityScope = animatedVisibilityScope
                                 )
+                        ) {
+                            StatItem(
+                                title = stringResource(R.string.abv),
+                                value = beer.abv
                             )
                             StatItem(
                                 title = stringResource(R.string.ibu),
@@ -263,21 +313,91 @@ private fun BeerDetailContent(
                     Text(
                         text = beer.description,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
                     )
                 }
 
                 // basics
                 DetailSection(stringResource(R.string.header_basics)) {
-                    DetailRow(stringResource(R.string.volume), beer.volume)
-                    DetailRow(stringResource(R.string.boil_volume), beer.boilVolume)
-                    DetailRow(stringResource(R.string.abv), beer.abv)
-                    DetailRow(stringResource(R.string.target_fg), beer.targetFg)
-                    DetailRow(stringResource(R.string.target_og), beer.targetOg)
-                    DetailRow(stringResource(R.string.ebc), beer.ebc)
-                    DetailRow(stringResource(R.string.srm), beer.srm)
-                    DetailRow(stringResource(R.string.ph), beer.ph)
-                    DetailRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
+                    BasicsRow(stringResource(R.string.volume), beer.volume)
+                    BasicsRow(stringResource(R.string.boil_volume), beer.boilVolume)
+                    BasicsRow(stringResource(R.string.abv), beer.abv)
+                    BasicsRow(stringResource(R.string.target_fg), beer.targetFg)
+                    BasicsRow(stringResource(R.string.target_og), beer.targetOg)
+                    BasicsRow(stringResource(R.string.ebc), beer.ebc)
+                    BasicsRow(stringResource(R.string.srm), beer.srm)
+                    BasicsRow(stringResource(R.string.ph), beer.ph)
+                    BasicsRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
+                }
+
+                // method
+                DetailSection(stringResource(R.string.header_method)) {
+                    beer.method.mashTemp.forEachIndexed { index, mash ->
+                        val text = if (mash.duration.isNullOrBlank()) {
+                            mash.temp
+                        } else {
+                            "${mash.temp} (${mash.duration})"
+                        }
+                        val label = if (index == 0) stringResource(R.string.mash) else ""
+                        MashRow(label, text)
+                    }
+                    beer.method.fermentation.temp.let {
+                        FermentationRow(stringResource(R.string.fermentation), it)
+                    }
+                    if (beer.method.twist.isNotEmpty()) {
+                        beer.method.twist.forEachIndexed { index, twist ->
+                            val label = if (index == 0) stringResource(R.string.twist) else ""
+                            TwistRow(label, twist)
+                        }
+                    }
+                }
+
+                // ingredients
+                val isMaltNotEmpty = beer.ingredients.malt.isNotEmpty()
+                val isHopsNotEmpty = beer.ingredients.hops.isNotEmpty()
+                val isYeastNotEmpty = !beer.ingredients.yeast.isNullOrBlank()
+
+                if (isMaltNotEmpty || isHopsNotEmpty || isYeastNotEmpty) {
+                    DetailSection(stringResource(R.string.header_ingredients)) {
+                        if (isMaltNotEmpty) {
+                            Text(
+                                text = stringResource(R.string.malt),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
+                            )
+                            beer.ingredients.malt.forEach { malt ->
+                                MaltRow(malt.name, malt.amount)
+                            }
+                        }
+
+                        if (isHopsNotEmpty) {
+                            Text(
+                                text = stringResource(R.string.hops),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
+                            )
+                            beer.ingredients.hops.forEach { hop ->
+                                val label = if (hop.attribute.isNullOrEmpty()) {
+                                    "${hop.name} (${hop.add})"
+                                } else {
+                                    "${hop.name} (${hop.add}, ${hop.attribute})"
+                                }
+                                HopsRow(label, hop.amount)
+                            }
+                        }
+
+                        if (isYeastNotEmpty) {
+                            Text(
+                                text = stringResource(R.string.yeast),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
+                            )
+                            YeastRow(beer.ingredients.yeast)
+                        }
+                    }
                 }
 
                 // food pairing
@@ -323,7 +443,10 @@ private fun StatItem(
     value: String,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -351,7 +474,7 @@ private fun DetailSection(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun DetailRow(
+private fun BasicsRow(
     label: String,
     value: String,
     modifier: Modifier = Modifier
@@ -370,7 +493,182 @@ private fun DetailRow(
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+        )
+    }
+}
+
+@Composable
+private fun MashRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.5f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1.5f)
+        )
+    }
+}
+
+@Composable
+private fun FermentationRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun TwistRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.5f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(2f)
+        )
+    }
+}
+
+@Composable
+fun MaltRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(0.7f),
+        )
+    }
+}
+
+@Composable
+fun HopsRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1.5f)
+        )
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(0.5f),
+        )
+    }
+}
+
+@Composable
+private fun YeastRow(
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BeerDetailErrorPreview() {
+    MaterialTheme {
+        BeerDetailError(
+            message = "Something went wrong",
+            onRetry = {}
         )
     }
 }
@@ -392,10 +690,20 @@ private fun BeerDetailContentPreview() {
         targetFg = "1010",
         ebc = "5",
         srm = "8.5",
-        volume = "20L",
-        boilVolume = "25L",
         ph = "4.4",
         attenuationLevel = "82.1",
+        volume = "20L",
+        boilVolume = "25L",
+        method = MethodUiModel(
+            mashTemp = listOf(MashTempUiModel("65°C", "75")),
+            fermentation = FermentationUiModel("19°C"),
+            twist = emptyList()
+        ),
+        ingredients = IngredientsUiModel(
+            malt = listOf(MaltUiModel("Extra Pale", "5.3kg")),
+            hops = listOf(HopUiModel("Citra", "12.5g", "start", "bitter")),
+            yeast = "Wyeast 1056"
+        ),
         foodPairing = listOf("Spicy thai curry", "Grilled steak", "Cheesecake"),
         brewersTips = "While the boil is vigorous, ensure you keep a close eye on the temperature.",
         contributedBy = "Alexander Ivanovsky <alxiw>"

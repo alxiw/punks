@@ -1,13 +1,28 @@
 package com.iiinaiii.punks.data.remote.util
 
+import com.iiinaiii.punks.data.remote.model.AmountResponse
+import com.iiinaiii.punks.data.remote.model.TempResponse
 import com.iiinaiii.punks.data.remote.model.VolumeResponse
+import kotlin.text.isNotBlank
 
 internal fun VolumeResponse.toVolumeText(): String {
-    return value?.let { it.toCleanString() + ValueUnit.convertToDisplayName(unit) } ?: EMPTY_PLACEHOLDER
+    return value.toString() + ValueUnit.convertToDisplayName(unit)
+}
+
+internal fun TempResponse.toTempText(): String {
+    return value?.let { it.toString() + ValueUnit.convertToDisplayName(unit) } ?: EMPTY_PLACEHOLDER
+}
+
+internal fun AmountResponse.toAmountText(): String {
+    return value.toCleanString() + ValueUnit.convertToDisplayName(unit)
 }
 
 internal fun Float?.toStringOrDefault(): String {
     return this?.toCleanString() ?: EMPTY_PLACEHOLDER
+}
+
+internal fun Int?.toDurationInMinutes(): String? {
+    return this?.let { "$it min" }
 }
 
 internal fun Int?.toStringOrDefault(): String {

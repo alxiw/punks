@@ -43,6 +43,10 @@ class BeerDetailViewModel @Inject constructor(
         }
     }
 
+    fun retry() {
+        loadBeer(beerId)
+    }
+
     fun onFavoriteClick() {
         val currentState = _uiState.value
         if (currentState is BeerDetailUiState.Success) {

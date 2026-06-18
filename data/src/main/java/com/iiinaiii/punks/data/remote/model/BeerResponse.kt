@@ -1,8 +1,11 @@
 package com.iiinaiii.punks.data.remote.model
 
 import com.iiinaiii.punks.data.remote.api.BeersSearchService
+import com.iiinaiii.punks.data.remote.util.toAmountText
 import com.iiinaiii.punks.data.remote.util.toDateOrDefault
+import com.iiinaiii.punks.data.remote.util.toDurationInMinutes
 import com.iiinaiii.punks.data.remote.util.toStringOrDefault
+import com.iiinaiii.punks.data.remote.util.toTempText
 import com.iiinaiii.punks.data.remote.util.toVolumeText
 import com.iiinaiii.punks.domain.model.Beer
 import com.iiinaiii.punks.domain.model.Fermentation
@@ -20,7 +23,7 @@ internal data class BeerResponse(
     @Json(name = "first_brewed") val firstBrewed: String,
     val description: String,
     val image: String,
-    val abv: Float?,
+    val abv: Float,
     val ibu: Float?,
     @Json(name = "target_fg") val targetFg: Float?,
     @Json(name = "target_og") val targetOg: Float?,
@@ -37,42 +40,58 @@ internal data class BeerResponse(
     @Json(name = "contributed_by") val contributedBy: String,
 )
 
+// volume
+
 internal data class VolumeResponse(
-    val value: Float?,
-    val unit: String
+    val value: Int,
+    val unit: String // litres
 )
 
+// method
+
 internal data class MethodResponse(
-    @Json(name = "mash_temp") val mashTemp: List<MashTempResponse>,
+    @Json(name = "mash_temp") val mashTemp: List<MashTempResponse>, // not empty
     val fermentation: FermentationResponse,
     val twist: String?
 )
 
 internal data class MashTempResponse(
-    val temp: VolumeResponse,
+    val temp: TempResponse,
     val duration: Int?
 )
 
 internal data class FermentationResponse(
-    val temp: VolumeResponse
+    val temp: TempResponse
 )
 
+internal data class TempResponse(
+    val value: Int?,
+    val unit: String // "celsius"
+)
+
+// ingredients
+
 internal data class IngredientsResponse(
-    val malt: List<MaltResponse>,
-    val hops: List<HopResponse>,
-    val yeast: String?
+    val malt: List<MaltResponse>, // might be empty (1 case)
+    val hops: List<HopResponse>, // might be empty (1 case)
+    val yeast: String? // might be null (1 case)
 )
 
 internal data class MaltResponse(
     val name: String,
-    val amount: VolumeResponse
+    val amount: AmountResponse
 )
 
 internal data class HopResponse(
     val name: String,
-    val amount: VolumeResponse,
-    val add: String,
-    val attribute: String
+    val amount: AmountResponse,
+    val add: String, // "start"/"middle"/"end", or also "Dry Hop", "60", "FWH" etc.
+    val attribute: String?
+)
+
+internal data class AmountResponse(
+    val value: Float,
+    val unit: String // "kilograms" or "grams"
 )
 
 internal fun BeerResponse.toBeer() = Beer(
@@ -102,32 +121,32 @@ internal fun BeerResponse.toBeer() = Beer(
 private fun MethodResponse.toDomain() = Method(
     mashTemp = mashTemp.map { it.toDomain() },
     fermentation = fermentation.toDomain(),
-    twist = twist
+    twist = twist?.split(",")?.map { it.trim() } ?: emptyList()
 )
 
 private fun MashTempResponse.toDomain() = MashTemp(
-    temp = temp.toVolumeText(),
-    duration = duration.toStringOrDefault()
+    temp = temp.toTempText(),
+    duration = duration?.toDurationInMinutes()
 )
 
 private fun FermentationResponse.toDomain() = Fermentation(
-    temp = temp.toVolumeText()
+    temp = temp.toTempText()
 )
 
 private fun IngredientsResponse.toDomain() = Ingredients(
     malt = malt.map { it.toDomain() },
     hops = hops.map { it.toDomain() },
-    yeast = yeast.toStringOrDefault()
+    yeast = yeast
 )
 
 private fun MaltResponse.toDomain() = Malt(
     name = name,
-    amount = amount.toVolumeText()
+    amount = amount.toAmountText()
 )
 
 private fun HopResponse.toDomain() = Hop(
     name = name,
-    amount = amount.toVolumeText(),
+    amount = amount.toAmountText(),
     add = add,
     attribute = attribute
 )
