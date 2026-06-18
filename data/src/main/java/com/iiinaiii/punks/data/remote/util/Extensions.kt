@@ -3,7 +3,7 @@ package com.iiinaiii.punks.data.remote.util
 import com.iiinaiii.punks.data.remote.model.VolumeResponse
 
 internal fun VolumeResponse.toVolumeText(): String {
-    return value.toString() + ValueUnit.convertToDisplayName(unit)
+    return value?.let { it.toCleanString() + ValueUnit.convertToDisplayName(unit) } ?: EMPTY_PLACEHOLDER
 }
 
 internal fun Float?.toStringOrDefault(): String {

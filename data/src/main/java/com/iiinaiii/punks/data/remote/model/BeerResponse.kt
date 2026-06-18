@@ -19,18 +19,53 @@ internal data class BeerResponse(
     @Json(name = "target_og") val targetOg: Float?,
     val ebc: Float?,
     val srm: Float?,
-    val volume: VolumeResponse,
-    @Json(name = "boil_volume") val boilVolume: VolumeResponse,
     val ph: Float?,
     @Json(name = "attenuation_level") val attenuationLevel: Float?,
+    val volume: VolumeResponse,
+    @Json(name = "boil_volume") val boilVolume: VolumeResponse,
+    val method: MethodResponse,
+    val ingredients: IngredientsResponse,
     @Json(name = "food_pairing") val foodPairing: List<String>,
     @Json(name = "brewers_tips") val brewersTips: String,
     @Json(name = "contributed_by") val contributedBy: String,
 )
 
 internal data class VolumeResponse(
-    val value: Int,
+    val value: Float?,
     val unit: String
+)
+
+internal data class MethodResponse(
+    @Json(name = "mash_temp") val mashTemp: List<MashTempResponse>,
+    val fermentation: FermentationResponse,
+    val twist: String?
+)
+
+internal data class MashTempResponse(
+    val temp: VolumeResponse,
+    val duration: Int?
+)
+
+internal data class FermentationResponse(
+    val temp: VolumeResponse
+)
+
+internal data class IngredientsResponse(
+    val malt: List<MaltResponse>,
+    val hops: List<HopResponse>,
+    val yeast: String?
+)
+
+internal data class MaltResponse(
+    val name: String,
+    val amount: VolumeResponse
+)
+
+internal data class HopResponse(
+    val name: String,
+    val amount: VolumeResponse,
+    val add: String,
+    val attribute: String
 )
 
 internal fun BeerResponse.toBeer() = Beer(
