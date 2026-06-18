@@ -1,9 +1,16 @@
 package com.iiinaiii.punks.data.remote.model
 
+import com.iiinaiii.punks.data.remote.api.BeersSearchService
 import com.iiinaiii.punks.data.remote.util.toDateOrDefault
 import com.iiinaiii.punks.data.remote.util.toStringOrDefault
 import com.iiinaiii.punks.data.remote.util.toVolumeText
 import com.iiinaiii.punks.domain.model.Beer
+import com.iiinaiii.punks.domain.model.Fermentation
+import com.iiinaiii.punks.domain.model.Hop
+import com.iiinaiii.punks.domain.model.Ingredients
+import com.iiinaiii.punks.domain.model.Malt
+import com.iiinaiii.punks.domain.model.MashTemp
+import com.iiinaiii.punks.domain.model.Method
 import com.squareup.moshi.Json
 
 internal data class BeerResponse(
@@ -74,18 +81,53 @@ internal fun BeerResponse.toBeer() = Beer(
     tagline = tagline,
     firstBrewed = firstBrewed.toDateOrDefault(),
     description = description,
-    imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/$image",
+    imageUrl = "${BeersSearchService.ENDPOINT}images/$image",
     abv = "${abv.toStringOrDefault()}%",
     ibu = ibu.toStringOrDefault(),
     targetOg = targetOg.toStringOrDefault(),
     targetFg = targetFg.toStringOrDefault(),
     ebc = ebc.toStringOrDefault(),
     srm = srm.toStringOrDefault(),
-    volume = volume.toVolumeText(),
-    boilVolume = boilVolume.toVolumeText(),
     ph = ph.toStringOrDefault(),
     attenuationLevel = attenuationLevel.toStringOrDefault(),
+    volume = volume.toVolumeText(),
+    boilVolume = boilVolume.toVolumeText(),
+    method = method.toDomain(),
+    ingredients = ingredients.toDomain(),
     foodPairing = foodPairing,
     brewersTips = brewersTips,
     contributedBy = contributedBy
+)
+
+private fun MethodResponse.toDomain() = Method(
+    mashTemp = mashTemp.map { it.toDomain() },
+    fermentation = fermentation.toDomain(),
+    twist = twist
+)
+
+private fun MashTempResponse.toDomain() = MashTemp(
+    temp = temp.toVolumeText(),
+    duration = duration.toStringOrDefault()
+)
+
+private fun FermentationResponse.toDomain() = Fermentation(
+    temp = temp.toVolumeText()
+)
+
+private fun IngredientsResponse.toDomain() = Ingredients(
+    malt = malt.map { it.toDomain() },
+    hops = hops.map { it.toDomain() },
+    yeast = yeast.toStringOrDefault()
+)
+
+private fun MaltResponse.toDomain() = Malt(
+    name = name,
+    amount = amount.toVolumeText()
+)
+
+private fun HopResponse.toDomain() = Hop(
+    name = name,
+    amount = amount.toVolumeText(),
+    add = add,
+    attribute = attribute
 )

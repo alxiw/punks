@@ -10,6 +10,14 @@ internal fun Float?.toStringOrDefault(): String {
     return this?.toCleanString() ?: EMPTY_PLACEHOLDER
 }
 
+internal fun Int?.toStringOrDefault(): String {
+    return this?.toString() ?: EMPTY_PLACEHOLDER
+}
+
+internal fun String?.toStringOrDefault(): String {
+    return this?.takeIf { it.isNotBlank() } ?: EMPTY_PLACEHOLDER
+}
+
 internal fun String?.toDateOrDefault(): String {
     return this?.let { LocalDateTimeAdapter.formatDate(it) } ?: EMPTY_PLACEHOLDER
 }
