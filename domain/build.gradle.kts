@@ -8,7 +8,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "com.iiinaiii.punks.domain"
+    namespace = "io.github.alxiw.punks.domain"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

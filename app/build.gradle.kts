@@ -16,11 +16,11 @@ if (localPropertiesFile.exists()) {
 }
 
 configure<ApplicationExtension> {
-    namespace = "com.iiinaiii.punks"
+    namespace = "io.github.alxiw.punks"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.iiinaiii.punks"
+        applicationId = "io.github.alxiw.punks"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -96,8 +96,7 @@ dependencies {
 
     // Test
     testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.espresso)
-
-    lintChecks(files("lint/checks-all.jar"))
 }
