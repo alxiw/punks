@@ -61,7 +61,6 @@ import com.iiinaiii.punks.presentation.detail.model.IngredientsUiModel
 import com.iiinaiii.punks.presentation.detail.model.MaltUiModel
 import com.iiinaiii.punks.presentation.detail.model.MashTempUiModel
 import com.iiinaiii.punks.presentation.detail.model.MethodUiModel
-import kotlin.collections.forEach
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -94,27 +93,10 @@ fun BeerDetailScreen(
                     }
                 },
                 actions = {
-                    val isFavorite = (uiState as? BeerDetailUiState.Success)?.model?.isFavorite ?: return@TopAppBar
-                    IconButton(
-                        onClick = viewModel::onFavoriteClick,
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                                shape = CircleShape
-                            )
-                    ) {
-                        Icon(
-                            painter = if (isFavorite) {
-                                painterResource(id = R.drawable.ic_heart_filled)
-                            } else {
-                                painterResource(id = R.drawable.ic_heart_outline)
-                            },
-                            contentDescription = "Favorite",
-                            tint = if (isFavorite) colorResource(R.color.favorite) else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
+                    FavoriteAction(
+                        isFavorite = (uiState as? BeerDetailUiState.Success)?.model?.isFavorite,
+                        onFavoriteClick = viewModel::onFavoriteClick
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
@@ -152,14 +134,14 @@ fun BeerDetailScreen(
 }
 
 @Composable
-internal fun BeersDetailLoading(
+private fun BeersDetailLoading(
     modifier: Modifier = Modifier
 ) {
     CircularProgressIndicator(modifier = modifier)
 }
 
 @Composable
-internal fun BeerDetailError(
+private fun BeerDetailError(
     message: String?,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -183,6 +165,34 @@ internal fun BeerDetailError(
     }
 }
 
+@Composable
+private fun FavoriteAction(
+    isFavorite: Boolean?,
+    onFavoriteClick: () -> Unit
+) {
+    isFavorite ?: return
+    IconButton(
+        onClick = onFavoriteClick,
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                shape = CircleShape
+            )
+    ) {
+        Icon(
+            painter = if (isFavorite) {
+                painterResource(id = R.drawable.ic_heart_filled)
+            } else {
+                painterResource(id = R.drawable.ic_heart_outline)
+            },
+            contentDescription = "Favorite",
+            tint = if (isFavorite) colorResource(R.color.favorite) else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun BeerDetailContent(
@@ -191,236 +201,271 @@ private fun BeerDetailContent(
     sharedTransitionScope: SharedTransitionScope,
     paddingValues: PaddingValues
 ) {
-    with(sharedTransitionScope) {
-        val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            // top section
-            Box(
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+        BeerHeroSection(
+            beer = beer,
+            animatedVisibilityScope = animatedVisibilityScope,
+            sharedTransitionScope =  sharedTransitionScope,
+            paddingValues = paddingValues
+        )
+
+        Column(modifier = Modifier.padding(16.dp)) {
+            // title
+            Text(
+                text = beer.name,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(360.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp, end = 16.dp, top = paddingValues.calculateTopPadding()),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(beer.imageUrl)
-                            .placeholder(R.drawable.placeholder_bottle)
-                            .crossfade(true)
-                            .precision(Precision.EXACT)
-                            .build(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(width = 160.dp, height = 360.dp)
-                            .padding(top = 16.dp)
-                            .sharedElement(
-                                sharedContentState = rememberSharedContentState(key = "image-${beer.id}"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            ),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 8.dp, start = 4.dp),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .sharedElement(
-                                    sharedContentState = rememberSharedContentState(key = "date-${beer.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                )
-                                .padding(bottom = 8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.first_brewed),
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                            Text(
-                                text = beer.firstBrewed,
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                        }
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.fillMaxWidth()
-                                .sharedElement(
-                                    sharedContentState = rememberSharedContentState(key = "abv-${beer.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                )
-                        ) {
-                            StatItem(
-                                title = stringResource(R.string.abv),
-                                value = beer.abv
-                            )
-                            StatItem(
-                                title = stringResource(R.string.ibu),
-                                value = beer.ibu
-                            )
-                            StatItem(
-                                title = stringResource(R.string.og),
-                                value = beer.targetOg
-                            )
-                        }
-                    }
-                }
-            }
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                // title
-                Text(
-                    text = beer.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.sharedElement(
-                        sharedContentState = rememberSharedContentState(key = "name-${beer.id}"),
+                    .beerSharedElement(
+                        key = "name-${beer.id}",
+                        scope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
-                )
+            )
 
-                // tagline
+            // tagline
+            Text(
+                text = beer.tagline,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .beerSharedElement(
+                        key = "tagline-${beer.id}",
+                        scope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+            )
+
+            // description
+            DetailSection(stringResource(R.string.header_description)) {
                 Text(
-                    text = beer.tagline,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .sharedElement(
-                            sharedContentState = rememberSharedContentState(key = "tagline-${beer.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
+                    text = beer.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
                 )
+            }
 
-                // description
-                DetailSection(stringResource(R.string.header_description)) {
+            // basics
+            DetailSection(stringResource(R.string.header_basics)) {
+                LabelValueRow(stringResource(R.string.volume), beer.volume)
+                LabelValueRow(stringResource(R.string.boil_volume), beer.boilVolume)
+                LabelValueRow(stringResource(R.string.abv), beer.abv)
+                LabelValueRow(stringResource(R.string.target_fg), beer.targetFg)
+                LabelValueRow(stringResource(R.string.target_og), beer.targetOg)
+                LabelValueRow(stringResource(R.string.ebc), beer.ebc)
+                LabelValueRow(stringResource(R.string.srm), beer.srm)
+                LabelValueRow(stringResource(R.string.ph), beer.ph)
+                LabelValueRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
+            }
+
+            BeerMethodSection(beer.method)
+
+            BeerIngredientsSection(beer.ingredients)
+
+            // food pairing
+            DetailSection(stringResource(R.string.header_food_pairing)) {
+                beer.foodPairing.forEach { food ->
                     Text(
-                        text = beer.description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                    )
-                }
-
-                // basics
-                DetailSection(stringResource(R.string.header_basics)) {
-                    LabelValueRow(stringResource(R.string.volume), beer.volume)
-                    LabelValueRow(stringResource(R.string.boil_volume), beer.boilVolume)
-                    LabelValueRow(stringResource(R.string.abv), beer.abv)
-                    LabelValueRow(stringResource(R.string.target_fg), beer.targetFg)
-                    LabelValueRow(stringResource(R.string.target_og), beer.targetOg)
-                    LabelValueRow(stringResource(R.string.ebc), beer.ebc)
-                    LabelValueRow(stringResource(R.string.srm), beer.srm)
-                    LabelValueRow(stringResource(R.string.ph), beer.ph)
-                    LabelValueRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
-                }
-
-                // method
-                DetailSection(stringResource(R.string.header_method)) {
-                    beer.method.mashTemp.forEachIndexed { index, mash ->
-                        val text = if (mash.duration.isNullOrBlank()) {
-                            mash.temp
-                        } else {
-                            "${mash.temp} (${mash.duration})"
-                        }
-                        val label = if (index == 0) stringResource(R.string.mash) else ""
-                        LabelValueRow(label, text, 0.5f, 1.5f)
-                    }
-                    beer.method.fermentation.temp.let {
-                        LabelValueRow(stringResource(R.string.fermentation), it)
-                    }
-                    if (beer.method.twist.isNotEmpty()) {
-                        beer.method.twist.forEachIndexed { index, twist ->
-                            val label = if (index == 0) stringResource(R.string.twist) else ""
-                            LabelValueRow(label, twist, 0.5f, 2f)
-                        }
-                    }
-                }
-
-                // ingredients
-                val isMaltNotEmpty = beer.ingredients.malt.isNotEmpty()
-                val isHopsNotEmpty = beer.ingredients.hops.isNotEmpty()
-                val isYeastNotEmpty = !beer.ingredients.yeast.isNullOrBlank()
-
-                if (isMaltNotEmpty || isHopsNotEmpty || isYeastNotEmpty) {
-                    DetailSection(stringResource(R.string.header_ingredients)) {
-                        if (isMaltNotEmpty) {
-                            IngredientSubSection(stringResource(R.string.malt)) {
-                                beer.ingredients.malt.forEach { malt ->
-                                    LabelValueRow(malt.name, malt.amount, 1f, 0.7f)
-                                }
-                            }
-                        }
-
-                        if (isHopsNotEmpty) {
-                            IngredientSubSection(stringResource(R.string.hops)) {
-                                beer.ingredients.hops.forEach { hop ->
-                                    val label = if (hop.attribute.isNullOrEmpty()) {
-                                        "${hop.name} (${hop.add})"
-                                    } else {
-                                        "${hop.name} (${hop.add}, ${hop.attribute})"
-                                    }
-                                    LabelValueRow(label, hop.amount, 1.5f, 0.5f)
-                                }
-                            }
-                        }
-
-                        if (isYeastNotEmpty) {
-                            IngredientSubSection(stringResource(R.string.yeast)) {
-                                LabelValueRow(beer.ingredients.yeast,null)
-                            }
-                        }
-                    }
-                }
-
-                // food pairing
-                DetailSection(stringResource(R.string.header_food_pairing)) {
-                    beer.foodPairing.forEach { food ->
-                        Text(
-                            text = food,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                        )
-                    }
-                }
-
-                // tips
-                DetailSection(stringResource(R.string.header_brewers_tips)) {
-                    Text(
-                        text = beer.brewersTips,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                    )
-                }
-
-                // contributed by
-                DetailSection(stringResource(R.string.header_contributed_by)) {
-                    Text(
-                        text = beer.contributedBy,
+                        text = food,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(paddingValues.calculateBottomPadding())
+            // tips
+            DetailSection(stringResource(R.string.header_brewers_tips)) {
+                Text(
+                    text = beer.brewersTips,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                )
+            }
+
+            // contributed by
+            DetailSection(stringResource(R.string.header_contributed_by)) {
+                Text(
+                    text = beer.contributedBy,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                )
+            }
+        }
+
+        Spacer(
+            modifier = Modifier.height(paddingValues.calculateBottomPadding())
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun Modifier.beerSharedElement(
+    key: String,
+    scope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+): Modifier = with(scope) {
+    sharedElement(
+        sharedContentState = rememberSharedContentState(key = key),
+        animatedVisibilityScope = animatedVisibilityScope
+    )
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun BeerHeroSection(
+    beer: BeerDetailUiModel,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    sharedTransitionScope: SharedTransitionScope,
+    paddingValues: PaddingValues
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(360.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, top = paddingValues.calculateTopPadding()),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(beer.imageUrl)
+                    .placeholder(R.drawable.placeholder_bottle)
+                    .crossfade(true)
+                    .precision(Precision.EXACT)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(width = 160.dp, height = 360.dp)
+                    .padding(top = 16.dp)
+                    .beerSharedElement(
+                        key = "image-${beer.id}",
+                        scope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
+                contentScale = ContentScale.Fit
             )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 8.dp, start = 4.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .beerSharedElement(
+                            key = "date-${beer.id}",
+                            scope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                ) {
+                    Text(
+                        text = stringResource(R.string.first_brewed),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    Text(
+                        text = beer.firstBrewed,
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                        .beerSharedElement(
+                            key = "abv-${beer.id}",
+                            scope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                ) {
+                    StatItem(
+                        title = stringResource(R.string.abv),
+                        value = beer.abv
+                    )
+                    StatItem(
+                        title = stringResource(R.string.ibu),
+                        value = beer.ibu
+                    )
+                    StatItem(
+                        title = stringResource(R.string.og),
+                        value = beer.targetOg
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BeerMethodSection(method: MethodUiModel) {
+    DetailSection(stringResource(R.string.header_method)) {
+        method.mashTemp.forEachIndexed { index, mash ->
+            val text = if (mash.duration.isNullOrBlank()) {
+                mash.temp
+            } else {
+                "${mash.temp} (${mash.duration})"
+            }
+            val label = if (index == 0) stringResource(R.string.mash) else ""
+            LabelValueRow(label, text, 0.5f, 1.5f)
+        }
+        method.fermentation.temp.let {
+            LabelValueRow(stringResource(R.string.fermentation), it)
+        }
+        if (method.twist.isNotEmpty()) {
+            method.twist.forEachIndexed { index, twist ->
+                val label = if (index == 0) stringResource(R.string.twist) else ""
+                LabelValueRow(label, twist, 0.5f, 2f)
+            }
+        }
+    }
+}
+
+@Composable
+private fun BeerIngredientsSection(ingredients: IngredientsUiModel) {
+    val isMaltNotEmpty = ingredients.malt.isNotEmpty()
+    val isHopsNotEmpty = ingredients.hops.isNotEmpty()
+    val isYeastNotEmpty = !ingredients.yeast.isNullOrBlank()
+
+    if (isMaltNotEmpty || isHopsNotEmpty || isYeastNotEmpty) {
+        DetailSection(stringResource(R.string.header_ingredients)) {
+            if (isMaltNotEmpty) {
+                IngredientSubSection(stringResource(R.string.malt)) {
+                    ingredients.malt.forEach { malt ->
+                        LabelValueRow(malt.name, malt.amount, 1f, 0.7f)
+                    }
+                }
+            }
+
+            if (isHopsNotEmpty) {
+                IngredientSubSection(stringResource(R.string.hops)) {
+                    ingredients.hops.forEach { hop ->
+                        val label = if (hop.attribute.isNullOrEmpty()) {
+                            "${hop.name} (${hop.add})"
+                        } else {
+                            "${hop.name} (${hop.add}, ${hop.attribute})"
+                        }
+                        LabelValueRow(label, hop.amount, 1.5f, 0.5f)
+                    }
+                }
+            }
+
+            if (isYeastNotEmpty) {
+                IngredientSubSection(stringResource(R.string.yeast)) {
+                    LabelValueRow(ingredients.yeast, null)
+                }
+            }
         }
     }
 }
