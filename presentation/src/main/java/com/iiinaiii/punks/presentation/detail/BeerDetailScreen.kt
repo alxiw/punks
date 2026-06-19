@@ -319,15 +319,15 @@ private fun BeerDetailContent(
 
                 // basics
                 DetailSection(stringResource(R.string.header_basics)) {
-                    BasicsRow(stringResource(R.string.volume), beer.volume)
-                    BasicsRow(stringResource(R.string.boil_volume), beer.boilVolume)
-                    BasicsRow(stringResource(R.string.abv), beer.abv)
-                    BasicsRow(stringResource(R.string.target_fg), beer.targetFg)
-                    BasicsRow(stringResource(R.string.target_og), beer.targetOg)
-                    BasicsRow(stringResource(R.string.ebc), beer.ebc)
-                    BasicsRow(stringResource(R.string.srm), beer.srm)
-                    BasicsRow(stringResource(R.string.ph), beer.ph)
-                    BasicsRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
+                    LabelValueRow(stringResource(R.string.volume), beer.volume)
+                    LabelValueRow(stringResource(R.string.boil_volume), beer.boilVolume)
+                    LabelValueRow(stringResource(R.string.abv), beer.abv)
+                    LabelValueRow(stringResource(R.string.target_fg), beer.targetFg)
+                    LabelValueRow(stringResource(R.string.target_og), beer.targetOg)
+                    LabelValueRow(stringResource(R.string.ebc), beer.ebc)
+                    LabelValueRow(stringResource(R.string.srm), beer.srm)
+                    LabelValueRow(stringResource(R.string.ph), beer.ph)
+                    LabelValueRow(stringResource(R.string.attenuation_level), beer.attenuationLevel)
                 }
 
                 // method
@@ -339,15 +339,15 @@ private fun BeerDetailContent(
                             "${mash.temp} (${mash.duration})"
                         }
                         val label = if (index == 0) stringResource(R.string.mash) else ""
-                        MashRow(label, text)
+                        LabelValueRow(label, text, 0.5f, 1.5f)
                     }
                     beer.method.fermentation.temp.let {
-                        FermentationRow(stringResource(R.string.fermentation), it)
+                        LabelValueRow(stringResource(R.string.fermentation), it)
                     }
                     if (beer.method.twist.isNotEmpty()) {
                         beer.method.twist.forEachIndexed { index, twist ->
                             val label = if (index == 0) stringResource(R.string.twist) else ""
-                            TwistRow(label, twist)
+                            LabelValueRow(label, twist, 0.5f, 2f)
                         }
                     }
                 }
@@ -360,42 +360,30 @@ private fun BeerDetailContent(
                 if (isMaltNotEmpty || isHopsNotEmpty || isYeastNotEmpty) {
                     DetailSection(stringResource(R.string.header_ingredients)) {
                         if (isMaltNotEmpty) {
-                            Text(
-                                text = stringResource(R.string.malt),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
-                            )
-                            beer.ingredients.malt.forEach { malt ->
-                                MaltRow(malt.name, malt.amount)
+                            IngredientSubSection(stringResource(R.string.malt)) {
+                                beer.ingredients.malt.forEach { malt ->
+                                    LabelValueRow(malt.name, malt.amount, 1f, 0.7f)
+                                }
                             }
                         }
 
                         if (isHopsNotEmpty) {
-                            Text(
-                                text = stringResource(R.string.hops),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
-                            )
-                            beer.ingredients.hops.forEach { hop ->
-                                val label = if (hop.attribute.isNullOrEmpty()) {
-                                    "${hop.name} (${hop.add})"
-                                } else {
-                                    "${hop.name} (${hop.add}, ${hop.attribute})"
+                            IngredientSubSection(stringResource(R.string.hops)) {
+                                beer.ingredients.hops.forEach { hop ->
+                                    val label = if (hop.attribute.isNullOrEmpty()) {
+                                        "${hop.name} (${hop.add})"
+                                    } else {
+                                        "${hop.name} (${hop.add}, ${hop.attribute})"
+                                    }
+                                    LabelValueRow(label, hop.amount, 1.5f, 0.5f)
                                 }
-                                HopsRow(label, hop.amount)
                             }
                         }
 
                         if (isYeastNotEmpty) {
-                            Text(
-                                text = stringResource(R.string.yeast),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
-                            )
-                            YeastRow(beer.ingredients.yeast)
+                            IngredientSubSection(stringResource(R.string.yeast)) {
+                                LabelValueRow(beer.ingredients.yeast,null)
+                            }
                         }
                     }
                 }
@@ -474,39 +462,28 @@ private fun DetailSection(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun BasicsRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
+private fun IngredientSubSection(
+    title: String,
+    content: @Composable () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-        )
-    }
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
+    )
+    content()
 }
 
 @Composable
-private fun MashRow(
+private fun LabelValueRow(
     label: String,
-    value: String,
-    modifier: Modifier = Modifier
+    value: String?,
+    labelWeight: Float = 1f,
+    valueWeight: Float = 1f
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -516,149 +493,16 @@ private fun MashRow(
             text = label,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(labelWeight)
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(1.5f)
-        )
-    }
-}
-
-@Composable
-private fun FermentationRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Composable
-private fun TwistRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(0.5f)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(2f)
-        )
-    }
-}
-
-@Composable
-fun MaltRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(0.7f),
-        )
-    }
-}
-
-@Composable
-fun HopsRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1.5f)
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(0.5f),
-        )
-    }
-}
-
-@Composable
-private fun YeastRow(
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f)
-        )
+        value?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.End,
+                modifier = Modifier.weight(valueWeight)
+            )
+        }
     }
 }
 
