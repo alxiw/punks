@@ -30,6 +30,7 @@ object DataModule {
 
     private const val CACHE_MAX_STALE = 60 * 60 * 24 * 14 // 14 days
     private const val CACHE_MAX_AGE = 60 * 60 * 24 * 1 // 1 day
+    private const val CACHE_HEADER = "Cache-Control"
     private const val DB_NAME = "punks.db"
 
     @Provides
@@ -66,29 +67,33 @@ object DataModule {
             .addInterceptor(interceptor)
             .cache(cache)
             .addInterceptor { chain ->
-                var request = chain.request()
-                if (!handler.isConnected) {
-                    request = request.newBuilder()
+                val request = if (!handler.isConnected) {
+                    //val cacheControlValue = CacheControl.Builder().onlyIfCached().maxStale(CACHE_MAX_STALE, TimeUnit.SECONDS).build().toString()
+                    chain.request().newBuilder()
                         .header(
-                            "Cache-Control",
+                            CACHE_HEADER,
                             "public, only-if-cached, max-stale=$CACHE_MAX_STALE"
                         )
                         .build()
+                } else {
+                    chain.request()
                 }
                 chain.proceed(request)
             }
             .addNetworkInterceptor { chain ->
                 val response = chain.proceed(chain.request())
                 val cacheControl = if (response.isSuccessful) {
+                    //CacheControl.Builder().maxAge(CACHE_MAX_AGE, TimeUnit.SECONDS).build()
                     "public, max-age=$CACHE_MAX_AGE"
                 } else {
+                    //CacheControl.FORCE_NETWORK
                     "no-store"
                 }
                 response.newBuilder()
                     .removeHeader("Pragma")
-                    .removeHeader("Cache-Control")
+                    .removeHeader(CACHE_HEADER)
                     .removeHeader("Expires")
-                    .header("Cache-Control", cacheControl)
+                    .header(CACHE_HEADER, cacheControl)
                     .build()
             }
             .build()
