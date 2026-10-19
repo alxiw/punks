@@ -615,7 +615,7 @@ private fun BeerItemPreview() {
                         name = "Lost Lager",
                         tagline = "Dry-Hopped Pilsner.",
                         firstBrewed = "DECEMBER 2018",
-                        imageUrl = "https://punkapi-alxiw.amvera.io/v3/images/001.png",
+                        imageUrl = "https://punkapi.dev/v3/images/001.png",
                         abv = "4.5%",
                         isFavorite = true
                     ),

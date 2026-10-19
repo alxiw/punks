@@ -28,7 +28,7 @@ internal interface BeersSearchService {
 
     companion object {
         val ENDPOINT = Uri.Builder().scheme("https")
-            .authority("punkapi-alxiw.amvera.io")
+            .authority("punkapi.dev")
             .appendEncodedPath("v3/")
             .build()
             .toString()
