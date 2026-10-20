@@ -1,26 +1,46 @@
 package io.github.alxiw.punks.data.local
 
-import io.github.alxiw.punks.data.local.dao.FavoriteDao
-import io.github.alxiw.punks.data.local.model.FavoriteEntity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 internal class BeersLocalDataSource @Inject constructor(
-    private val favoriteDao: FavoriteDao
+    private val dataStore: DataStore<Preferences>
 ) {
-    fun getFavoriteIdsFlow(): Flow<List<Int>> = favoriteDao.getFavoriteIdsFlow()
+    private val favoriteBeersKey = stringSetPreferencesKey("favorites")
 
-    suspend fun getFavoriteIds(): List<Int> = favoriteDao.getFavoriteIds()
+    fun getFavoriteIdsFlow(): Flow<List<Int>> = dataStore.data.map { preferences ->
+        preferences[favoriteBeersKey]?.map { it.toInt() } ?: emptyList()
+    }
 
-    suspend fun isFavorite(id: Int): Boolean = favoriteDao.isFavorite(id)
+    suspend fun getFavoriteIds(): List<Int> {
+        val preferences = dataStore.data.first()
+        return preferences[favoriteBeersKey]?.map { it.toInt() } ?: emptyList()
+    }
+
+    suspend fun isFavorite(id: Int): Boolean {
+        val preferences = dataStore.data.first()
+        return preferences[favoriteBeersKey]?.contains(id.toString()) ?: false
+    }
 
     suspend fun addFavorite(id: Int) {
-        favoriteDao.insert(FavoriteEntity(id))
+        dataStore.edit { preferences ->
+            val currentFavorites = preferences[favoriteBeersKey] ?: emptySet()
+            preferences[favoriteBeersKey] = currentFavorites + id.toString()
+        }
     }
 
     suspend fun removeFavorite(id: Int) {
-        favoriteDao.delete(FavoriteEntity(id))
+        dataStore.edit { preferences ->
+            val currentFavorites = preferences[favoriteBeersKey] ?: emptySet()
+            preferences[favoriteBeersKey] = currentFavorites - id.toString()
+        }
     }
 }

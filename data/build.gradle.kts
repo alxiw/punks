@@ -61,9 +61,6 @@ dependencies {
     // Util
     implementation(libs.threetenabp)
 
-    // db
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.paging)
+    // DB
+    implementation(libs.androidx.datastore.preferences)
 }

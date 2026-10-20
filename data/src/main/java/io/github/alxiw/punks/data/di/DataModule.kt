@@ -2,9 +2,10 @@ package io.github.alxiw.punks.data.di
 
 import android.content.Context
 import android.util.Log
-import androidx.room.Room
-import io.github.alxiw.punks.data.local.db.PunksDatabase
-import io.github.alxiw.punks.data.local.dao.FavoriteDao
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import io.github.alxiw.punks.data.remote.api.BeersSearchService
 import io.github.alxiw.punks.data.remote.NetworkHandler
 import io.github.alxiw.punks.data.remote.util.CacheUtil
@@ -31,7 +32,7 @@ object DataModule {
     private const val CACHE_MAX_STALE = 60 * 60 * 24 * 14 // 14 days
     private const val CACHE_MAX_AGE = 60 * 60 * 24 * 1 // 1 day
     private const val CACHE_HEADER = "Cache-Control"
-    private const val DB_NAME = "punks.db"
+    private const val DATA_STORE_FILE_NAME = "punks"
 
     @Provides
     @Singleton
@@ -112,17 +113,9 @@ object DataModule {
 
     @Provides
     @Singleton
-    internal fun provideDatabase(@ApplicationContext context: Context): PunksDatabase {
-        return Room.databaseBuilder(
-            context,
-            PunksDatabase::class.java,
-            DB_NAME
-        ).build()
-    }
-
-    @Provides
-    @Singleton
-    internal fun provideFavoriteBeerDao(database: PunksDatabase): FavoriteDao {
-        return database.favoriteBeerDao()
+    internal fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile(DATA_STORE_FILE_NAME) }
+        )
     }
 }
